@@ -1333,7 +1333,7 @@
     <!-- 通过不同的key来设置不同的内容 -->
     <transition>
         <button  :key="isEditing">
-            {{isEditing? 'Save':'Edit'}
+            {{isEditing? 'Save':'Edit'}}
         </button>
     </transition>
     ```
