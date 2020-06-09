@@ -626,13 +626,13 @@
     ```
 * 如果要使这种方式能在子组件中使用则在子组件对象内加入子组件
     ```javascript
-    var component1 = {...}
-    var component2 = {{
+    var component1 = {//...}
+    var component2 = {
         components : {
             'component-1' :  component1
         }
     }
-    var component3 = {...}
+    var component3 = {//...}
     ```
 ## Prop
 * HTML中对attribute的大小写不敏感，但浏览器最终会全部解析成小写字母
