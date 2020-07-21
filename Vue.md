@@ -19,7 +19,7 @@
     参数是定义在数据模型中的，可更改。
     * 重要的是，参数不能带有大小字符，浏览器会默认将参数解析为小写字母，然后再vm属性中寻找该值
 
-        ```html
+        ```vue
         <a v-bind:[attribute_name]="url" ></a>
         ```
         ```JavaScript
@@ -33,7 +33,7 @@
         ```
 * vm对象方法，暴露自身固有的属性
     * 通过访问以$开头的属性来访问自身固有属性
-        ```javascript
+        ```vue
         var data = {
             ...
         };
@@ -46,7 +46,7 @@
         ```
 
 * 引入Vue.js并创建Vue 配置对象 app ,设置其参数，data中的所有数据均为app中的属性 app.prop ， 其中数据在指定的元素中使用{{prop}}进行访问 ，{{}}中为js语法
-    ```javascript
+    ```vue
     let app = new Vue({
         el:"元素选择器",
         data:{
@@ -56,11 +56,11 @@
     })
     ```
 * 使用v-once 将其加入对应元素行间 ，将内部插值部分只渲染一次，不会响应更新
-    ```html
+    ```vue
     <span v-once>{{message}}</span> message不会接受更新
     ```
 * 使用v-html = "html代码"， 将元素替换成 相应的解析的html标签，但无法实现复合渲染
-    ```javascript
+    ```vue
     var vm = new Vue({
         ...
         data:{
@@ -68,7 +68,7 @@
         }
     })
     ```
-    ```html
+    ```vue
     <span v-html="rawHtml">{{rawHtml}}</span>   
     ```
     > 此时span标签变为rawHtml内容中的li标签 ，其中复合的a标签被省略，且内部插值会被全部忽略
@@ -76,12 +76,12 @@
 ## 定义元素行间属性，无法使用{{}}语法
 
 * 使用v-bind:属性 将HTML元素标签属性 与Vue模型对象的data 数据绑定
-    ```html
+    ```vue
     <span v-bind:title = "message"></span>
     ```
 ## v-cloak 放置模板内容闪现
 * 处理页面刷新时，因渲染延时导致的模板内容出现在页面上的问题，需要配合css
-    ```html
+    ```vue
     <div v-cloak>{{message}}</div>
     ```
     ```css
@@ -102,7 +102,7 @@
 ### 计算属性
 * 使用视图模型的计算属性 app.computed:{} ，用于 将data中的数据模型进行计算，必须使用return返回
   
-    ```JavaScript
+    ```vue
     computed:{
         属性1(){
             //计算data中的数据，this为顶级对象vm
@@ -121,7 +121,7 @@
     * 与 watch中的监视属性来触发callback 相比较 ，计算属性 在监听多个应用属性的时候拥有更少的代码
 
     * 计算属性的setter，在必要情况下，可自行设置setter,将改变更新到所引用的属性上
-        ```JavaScript
+        ```vue
         computed:{
             属性1:{
                 get:function(){
@@ -139,7 +139,7 @@
 ### 监听器
 * 使用视图模型vm的监视属性 app.watch:{} ， 用于监视data中 数据变化，提供新旧数据
 * watch适用于响应数据的变化，从而执行异步的或者开销比较大的操作，  因为能得到 新、旧两个值 ，对自定义监听有了更多的响应操作
-    ```javascript
+    ```vue
     ...
     watch:{
         data中的属性值 :function(newVal , oldVal){
@@ -159,7 +159,7 @@
 
     * 绑定对象，动态切换class，若原标签设有class ，则在基础上进行增加
         * 在内联中绑定一个对象, 冒号坐标为样式名字符串，右边为控制真值属性
-            ```html
+            ```vue
             <div v-bind:class = "{ active : isActive}"></div>
             或者
             <div v-bind:class = "{ 'active': isActive}"></div>
@@ -169,7 +169,7 @@
         > 注意，此处的 active 仅仅是指样式名，类型为字符串
 
         * 绑定一个在data中添加的属性对象
-            ```javascript
+            ```vue
             data:{
                 classObj:{
                     active : isActive,
@@ -178,11 +178,11 @@
                 }
             }
             ```
-            ```html
+            ```vue
             <div v-bind:class = "classObj"></div>
             ```
         * 绑定一个返回值为 对象的计算属性 
-            ```javascript
+            ```vue
             data:{
                 isActive : true,
                 isError : false,
@@ -194,37 +194,37 @@
                 }
             }
             ```
-            ```html
+            ```vue
             <div v-bind:class = "classObj"></div>
             ```
     * 绑定数组
         * 直接绑定一个数组，其中元素为 data中字符串的属性
-            ```javascript
+            ```vue
             data:{
                 activeClass: 'active',
                 errorClass: 'error',
                 ...
             }
             ```
-            ```html
+            ```vue
             <div v-bind:class = "[activeClass, errorClass, ...]"></div>
             ```
             * 利用布尔值，在数组内部使用三元运算符
-                ```html
+                ```vue
                 <div v-bind:class = "[ isActive ?  activeClass : '', errorClass, ...]"></div>
                 ```
             * 利用布尔值，在数组内部混合使用对象   
-                ```html
+                ```vue
                 <div v-bind:class = "[ { activeClass : isActive } , errorClass, ...]"></div>
                 ```
 
 * 绑定内联样式 v-bind:style = "" ，可传递一个js对象或者数组
     * 绑定一个对象{} ，内部样式名 为驼峰式命名 ，其值为 vm对象的属性 ,如果传递进一个多重值，默认使用最后一个
-        ```html
+        ```vue
             <div v-bind:style = "{color : colorStyle , fontSize: fontSize + 'px'}"></div>
         ```
     * 直接绑定一个vm对象属性 
-        ```javascript
+        ```vue
             data: {
                 styleObj : {
                     color : 'red',
@@ -233,11 +233,11 @@
                 }
             }
         ```
-        ```html
+        ```vue
             <div v-bind:style = "styleObj"></div>
         ```
     * 使用数组，绑定多个样式对象
-        ```javascript
+        ```vue
             data: {
                 activeStyle : {
                     color : 'green',
@@ -251,27 +251,27 @@
                 }
             }
         ```
-        ```html
+        ```vue
             <div v-bind:style = "[activeStyle, activeError]"></div>
         ```
 
 # 条件渲染 v-if & v-else-if & v-else 
 * 使用真值选择渲染一块内容 ，v-else-if & v-else  必须紧跟 v-if
-    ```html
+    ```vue
     <h1 v-if = "真值">This is True</h1>
     <h1 v-else-if = "真值">This is True</h1>
     <h1 v-else> This is False </h1>
     ```
 * 在组件模板  template 上使用v-if，选择渲染模板， template 标签不会出现
 
-    ```html
+    ```vue
     <template v-if = "真值">
         <h1 >This is True</h1>
     </template>
     ```
 * 使用key管理重复元素
     * 默认情况下，如果使用 v-if 和 v-else 来切换组件中，如果有相同的元素，切换时 ，只替换他们不相同的值，不会重新渲染DOM对象
-    ```html
+    ```vue
     <template v-if = "真值">
         <h1 >This is True</h1>
     </template>
@@ -280,7 +280,7 @@
     </template>
     ```
     * 使用key来 完全独立渲染 2个拥有相同元素的模板 ，切换时 ，2个元素完全重新渲染，数据会被清除 ，但没有key 属性的则会被高效利用
-    ```html
+    ```vue
     <template v-if = "真值">
         <h1 key="h1-true" >This is True</h1>
     </template>
@@ -299,7 +299,7 @@
 * 由于Vue系统机制，key 在 元素属性中无法通过{{}} 来访问 ，建议 再使用v-bind:index 传入每个迭代元素的索引
 * 在v-for 字符串中，可直接调用父域中的methods方法
 * 在同一节点中 v-for 的优先级 比 v-if高 , 不推荐在同一元素上同时使用两者
-    ```javascript
+    ```vue
     data: {
         items: [
             { message: 'Foo' },
@@ -309,7 +309,7 @@
     }
     ```
     > 在此处使用 item of items 和 item in items 为相同结果，但在js中 for in 和 for of 截然不同，前者遍历对应数组的key，后者遍历对应数组的value
-    ```html
+    ```vue
     <ul>
         <li v-for="(item, index) in items" v-bind:key="index ">
            {{index}} -  {{item}}
@@ -317,7 +317,7 @@
     </ul>  
     ```
 * 使用v-for 迭代 一个对象属性时 ， 第二个 参数 propName 可以迭代出 每个prop的key , 第三个参数 index 可迭代出索引
-    ```javascript
+    ```vue
     data: {
         object : {
             name: 'ljp',
@@ -327,7 +327,7 @@
         }
     }
     ```
-    ```html
+    ```vue
     <ul>
         <li v-for="(prop, propName) in object" :key="index ">
           {{propName}} :  {{prop}}
@@ -338,7 +338,7 @@
 
 * 在组件上使用v-for ， 其中v-bind:key是必须的 , 
     * 推荐将迭代出的数据与组件属性prop进行绑定，这样做会进一步解除 组件与数据之间的耦合，这样在其他场合可以通过 访问 组件的属性 来 再次访问 迭代出的数据
-    ```html
+    ```vue
     <my-component
         v-for="(item, index) in items"
         v-bind:item="item"
@@ -366,7 +366,7 @@
 * 监听实例数据 data 变化，并触发渲染
     * vm对象中的data属性可以引用外部的数据对象，并指向同一内存单元，包括对其更改的响应
     * Vue只对在创建时就已经存在于data中的属性变量 进行监听，若属性在创建vm对象之后加入，则不会进行监听
-        ```javascript
+        ```vue
         var data = {
             ...
         }
@@ -376,7 +376,7 @@
         })
         ```
         * 或者使用 Object.freeze() 阻止对数据对象更改一切监听
-        ```javascript
+        ```vue
         var data = {
             ...
         };
@@ -389,7 +389,7 @@
 
 # Vue事件处理
 * 使用 v-on:事件="" 指令 ，可以在触发事件时运行一些js代码 , 或者直接调用methods中的callback
-    ```javascript
+    ```vue
     ...
     data : {
         count : 0
@@ -400,14 +400,14 @@
         }
     }
     ```
-    ```html
+    ```vue
     <button v-on:click="count += 1 ">加1</button>
     <span>{{ count }}</span>
     <button v-on:click="callback">加1</button>
     <span>{{ count }}</span>
     ```
 *  直接在内联中调用方法,传入指定参数，如果需要使用事件，在内联中将$event传入到callback即可在方法中访问event
-   ```javascript
+   ```vue
     ...
     data : {
         count : 0
@@ -419,7 +419,7 @@
         }
     }
    ```
-    ```html
+    ```vue
     <button v-on:click="callback('hello', $event)">hello</button>
     ```
 * 事件修饰符，用于例如阻止默认事件，阻止事件冒泡 等 , 需要注意修饰顺序 ，在冒泡结束后才会触发默认事件
@@ -434,7 +434,7 @@
             每次事件产生，浏览器都会去查询一下是否有preventDefault阻止该次事件的默认动作。我们加上passive就是为了告诉浏览器，不用查询了，我们没用preventDefault阻止默认动作。
             在滚动监听过程中，移动每个像素都会产生一次事件，每次都使用内核线程查询prevent会使滑动卡顿。我们通过passive将内核线程查询跳过，可以大大提升滑动的流畅度。    
 
-    ```html
+    ```vue
     <button v-on:事件.事件修饰1.事件修饰2...="callback">hello</button>
     <button v-on:click.stop.prevent="callback">hello</button>
     ```
@@ -459,10 +459,8 @@
                 * .right为 方向右键  →
         * .middle 只使用与鼠标事件
 
-
-
     * 通过增加全局属性来自定义别名
-        ```javascript
+        ```vue
         vm.config.keyCodes.F1 = 112;
         ```
     * Vue提供了以下常用系统功能按键的别名，
@@ -473,13 +471,13 @@
     
         > 此类按键在与其他按键组合keyup的时候，需要按住系统功能按键，再触发普通按键keyup才会触发相应事件
     
-    ```html
+    ```vue
     <input v-on:按键动作.按键码1.按键码2="callback">
     <input v-on:keyup.ctrl.67 = "copy" >
     <input v-on:click.ctrl= "submit" > ctrl + 鼠标左键
     ```
     * .exact 修饰符，允许精准控制一个按键事件
-        ```html
+        ```vue
         <input v-on:click.ctrl.exact= "submit" > 只有 Ctrl 键被按下时才会触发
     
         ```
@@ -499,7 +497,7 @@
         * 如果v-model没有匹配到相应option标签的value ，则选择框会处于空状态
         * 多选时(属性增加multiple) ，将选择的option的value绑定到一个数组
         * 推荐使用 v-for 来渲染option
-    ```html
+    ```vue
     <input type="checkbox" v-model="items"> 
     <input type="checkbox" v-model="isSelect"> 
     <select v-model="selected">
@@ -518,7 +516,7 @@
 * 使用Vue对象.component()构建一个新组件，均为全局组件
     * 与Vue实例接收相同的选项，但只有根vm实例才拥有el属性，每个组件各自独立
     * 在组件中，data属性必须为一个返回值为对象的函数  而不是一个对象，因此每个组件可以获得自己独立的数据
-    ```javascript
+    ```vue
     Vue.component('自定义标签名' ,{
         data:function () {
             return {
@@ -535,7 +533,7 @@
     * 在组件外部 ，可以通过v-bind绑定该attribute 来实现vm数据的传递
     * 不要使用过多的 自定义 attribute 来接收数据，尽量 在组件模板中进行访问一个集中数据的对象
     * 组件模板，只能有单个根元素
-    ```javascript
+    ```vue
     Vue.component('test', {
         props: ['page'],
         template: ' \
@@ -545,13 +543,13 @@
                        </div>  '
     })
     ```
-    ```html
+    ```vue
     <test v-bind:page="pageData"></test>
     ```
 
 * 组件自定义事件 
     * 用于访问/操作 根实例中的data内数据   
-    ```html
+    ```vue
         <div>
             <h3>{{ page.title }}</h3> 
             <p>{{page.content}}</p> 
@@ -559,31 +557,31 @@
         </div> 
     ```
     * 或者使用 $emit('event')，来触发该事件，以调用根实例方法
-        ```html
+        ```vue
             <div>
                 <button v-on:click="$emit('event')">增大</button>
             </div> 
         ```
         * 使用$emit()第二个参数  在父组件中使用$event 来访问这个参数
             * 子模板中，当 button 发送click时，触发自定义事件enlarge-text，并且这个事件抛出0.1这个值
-                ```html
+                ```vue
                 <button v-on:click="$emit('enlarge-text', 0.1)">Enlarge text</button>
                 ```
             * 根模板中，使用v-on监听enlarge-text事件，并且使用$event来接收enlarge-text事件触发所抛出的值
-                ```html
+                ```vue
                 <blog-post
                 ...
                 v-on:enlarge-text="postFontSize += $event"
                 ></blog-post>
                 ```
         * 如果这个事件处理回调函数，则该函数的第一个参数则是子组件中$emit的第二个参数
-            ```html
+            ```vue
                 <blog-post
-                ...
+                <!--      ...-->
                 v-on:enlarge-text="enlarge-text">
                 </blog-post>
             ```
-            ```JavaScript
+            ```vue
                 methods: {
                     onEnlargeText: function (enlargeAmount) {
                         this.postFontSize += enlargeAmount
@@ -592,13 +590,13 @@
             ```
     * 在组件上使用v-model双向绑定
         * 对于input绑定v-model来说相当于监听input事件
-            ```html
+            ```vue
             <input
             v-bind:value="searchText"
             v-on:input="searchText = $event.target.value">
             ```
         * 在组件中使用双向绑定，实际上使用$emit()的事件抛出
-        ```javascript
+        ```vue
         props: ['value'],
         template: `
             <input 
@@ -619,7 +617,7 @@
 ##  局部注册
 * 通过局部注册的组件在 子组件中均不可用
 * 通过定义普通JavaScript对象来自定义组件，然后再根实例中于components属性内进行添加
-    ```javascript
+    ```vue
     var component1 = {...}
     var component2 = {...}
     var component3 = {...}
@@ -632,7 +630,7 @@
     })
     ```
 * 如果要使这种方式能在子组件中使用则在子组件对象内加入子组件
-    ```javascript
+    ```vue
     var component1 = {//...}
     var component2 = {
         components : {
@@ -644,12 +642,12 @@
 ## Prop
 * HTML中对attribute的大小写不敏感，但浏览器最终会全部解析成小写字母
 * 在定义组件时，prop对象内的attribute 在使用 驼峰式命名时，在父组件中使用该属性应当使用全小写并用 '-' 分隔开
-    ```javascript
+    ```vue
     ...
     props: ['todoItems'];
     ...
     ```
-    ```html
+    ```vue
     <component v-bind:todo-item="data"></component>
     ```
 * 以对象的形式 对每个prop 进行类型验证，如果传入的数据类型错误，浏览器给予控制台提示
@@ -660,7 +658,7 @@
     * default 定义prop 在没有接受数据 时的默认值
         * 带有默认对象的prop 同样使用返回对象的函数
     * 设定一个验证规则函数
-    ```javascript
+    ```vue
     //...
     props: {
         todoItems : [Array, Object...] ,
@@ -687,7 +685,7 @@
         }
     ```
     * 验证prop 中 的valid 是否为 某个函数创建
-    ```javascript
+    ```vue
     function Validator (value){
         this.value = value
     }
@@ -698,21 +696,21 @@
     })
     ```
 * 从组件元素行间 传入非prop中定义的 attribute , 这个 attribute 会被自动添加在组件模板的 根元素上
-    ```html
+    ```vue
     <bootstrap-date-input data-date-picker="activated"></bootstrap-date-input>
     ```
 
 * 传入布尔值，当使用v-bind绑定一个attribute时，在没有任何值的情况下，均为true 
-    ```html
+    ```vue
     <!-- 这时不需要使用v-bind: -->
     <component is-display></component>
     ```
 * 传入一个对象的所有属性，这会使这个对象的每一个属性都绑定成为一个attribute
-    ```html
+    ```vue
     <component v-bind="object"></component>
     ```
     等同于
-    ```html
+    ```vue
     <component 
         v-bind:prop1="object.prop1"
         v-bind:prop2="object.prop2">
@@ -721,7 +719,7 @@
 * 单向数据流
     * 所有的prop的传递都是父组件向子组件进行传递 ，这样可以有效的控制数据的流向，数据的使用清晰明了
     * 最佳的做法是将prop定义的attribute中传递进来的值在组件的data 或者 computed 对象内进行处理
-        ```javascript
+        ```vue
         props : {
             initData : Array
         } ,
@@ -741,7 +739,7 @@
 * 替换/合并已有的 Attribute
     * 如果在组件内根元素拥有class或者style的情况下，在父组件中也加入不同的class或style，则渲染时会将他们合并到一起
     * 如果是其他的attribute ，则会直接替换
-    ```html 
+    ```vue 
     <!-- 子组件模板 ,假设这个组件名为custom-input-->
     <input type="text" class="input-class-a"/>
     <!-- 父级组件模板 -->
@@ -754,7 +752,7 @@
 
 * 禁用 attribute 的继承
     * 在组件内添加inheritAttrs: false 来禁止在父组件上对子组件进行attribute的添加，子组件不会自动获得在内联中获得的attribute
-        ```JavaScript
+        ```vue
         Vue.component('component', {
             inheritAttrs: false,
             // ...
@@ -764,7 +762,7 @@
         
     * 在禁止后，可以手动在组件内添加$attrs 来访问指定设置的attribute
         * 使用v-bind="$attrs"在子组件上继承父组件身上的 attribute 
-        ```html
+        ```vue
         <!-- 子组件模板 -->
         <div v-bind="$attrs">
             <input v-bind="$attrs">
@@ -778,7 +776,7 @@
 
 * 自定义组件的v-model的双向绑定属性
     * 使用组件model选项来指定双向绑定的prop，这个prop 仍然要在prop选项中添加
-        ```javascript
+        ```vue
         Vue.component('base-checkbox', {
             model: {
                 prop: 'checked',    //指定绑定的prop
@@ -798,14 +796,14 @@
 * 绑定原生事件到组件
     * 在通常情况下，父组件 在子组件根元素中 监听子组件触发的原生事件而发散的($emit())的自定义事件 ，调用父组件方法
     * 父组件 无法直接监听 子组件的js原生事件，可以通过事件修饰符 .native 来解决
-        ```html
+        ```vue
         <!-- 当点击到该组件区域时，添加修饰符.native 才会触发onClick-->
         <component v-on:click.native="onClick"></component>
         ```
 * 简化实现 父组件 与 子组件的多个双向绑定 .sync
     * 一般情况下，在子组件内对prop进行与父组件prop进行同步 发散自定义事件父组件监听来更新
     * 使用了带.sync修饰符的v-bind仍然可以做到这一点
-    ```html
+    ```vue
     <!-- 传统自定义事件双向绑定 -->
     <text-document
     v-bind:title="doc.title"
@@ -824,7 +822,7 @@
 
 * 通过插槽从父组件向子组件分发内容 ，且可访问插槽所在组件的父组件属性，不可访问插槽所在组件的prop属性
     * 父组件模板内
-        ```html
+        ```vue
         <todo-item v-bind:items="todoList">
             <p>此标签在父组件中创建，使用slot插入进这个子组件模板中{{父组件属性}}</p>
             <component-a></component-a>
@@ -832,7 +830,7 @@
         </todo-item>
         ```
     * 子组件模板内
-        ```javascript
+        ```vue
         template: ` 
             <div>
                 <slot></slot>  p标签 其他组件 等会在渲染组件时，在此出现
@@ -841,7 +839,7 @@
         ```
 * 设置插槽预备内容(默认值)
     * 直接在slot标签内容内写入默认值，若父组件不传递插值 ，则该默认值不会被替换
-        ```html
+        ```vue
         <button type="submit">
             <slot>Submit</slot>
         </button>
@@ -851,7 +849,7 @@
     * 在父组件中对相应插槽提供内容的时候，在template标签使用v-slot:name 指令，并包裹内容
     * 没有使用v-slot指令，或者没有v-slot指令参数 的template标签将视为默认插槽的内容，或者直接指定为v-slot:default
     * v-slot 只能添加在 template标签 上 ，或者只有默认插槽的组件上
-    ```html
+    ```vue
     <!-- 子组件模板 -->
     <div class="container">
         <header>
@@ -884,7 +882,7 @@
     * 要使用传递出来的prop，需要在父组件上的子组件上 使用template 标签对slot标签进行包裹
     * 为其在template的v-slot:name指令 赋予一个prop名
     * 此时向上传递的子组件prop将保存在 template创建的prop中
-    ```html
+    ```vue
     <!-- 子组件模板 -->
     <span>
         <slot v-bind:user="user">
@@ -903,7 +901,7 @@
     </current-user>
     ```
 * 插槽 prop 作用域解构，符合解构的，简化部分代码，可使用动态插槽名
-     ```html
+     ```vue
     <!-- 子组件模板 -->
     <span>
         <slot v-bind:user="user">
@@ -926,7 +924,7 @@
     </current-user>
     ```
 * 当指令只有参数的时候(:后面的值) 插槽指令可缩写为 # ，可替换一切v-slot:
-    ```html
+    ```vue
     <!-- 子组件模板 -->
     <span>
         <slot v-bind:user="user">
@@ -948,7 +946,7 @@
     </current-user>
     ```
 * 使用插槽控制子组件的v-for的迭代样式
-    ```html
+    ```vue
     <!-- 子组件模板 -->
     <ul>
         <li
@@ -974,7 +972,7 @@
 * is 属性
     * is用于解除html的模板嵌套限制 (例如ul中除了li而其他都不是合法元素的情况)，
     * is指示当前元素、组件的内容为其他内容
-        ```html
+        ```vue
         <!-- 父组件模板中 -->
         <ul>
             <!-- 在渲染时，li将被名为my-component的组件标签替换-->
@@ -982,18 +980,18 @@
         </ul>
         ```
     * 动态的使用组件，在某个自定义标签上，用is来指出存在的子组件
-        ```html
+        ```vue
         <!-- 此处custom-component可以为任何合法值-->
         <custom-component is="my-component-a"></custom-component>
         ```
     * 可通过这种方法，将is绑定到父域的一个data中，再绑定click事件，对组件进行切换
         * 这种切换本质上为重新渲染关联使用is的组件，无法缓存已修改的组件的状态
-        ```html
+        ```vue
         <!-- componentName决定 该处内容-->
         <custom-component v-bind:is="componentName"></custom-component>
         ```
     * 使用keep-alive标签包裹，缓存使用is 属性进行切换的组件状态
-        ```html
+        ```vue
         <!-- keep-alive 中的组件不会因切换而被重新初始化-->
         <keep-alive>
             <custom-component v-bind:is="componentName"></custom-component>
@@ -1003,7 +1001,7 @@
 * 异步组件用于接收从远程服务器发送到本地的组件，
 * 这个组件只在需要被渲染的时候才会触发该组件的工厂函数，并且将会对其进行缓存
 * Vue 允许以一个 异步 类似Promise构造器函数 的工厂函数的形式来定义一个组件
-    ```JavaScript
+    ```vue
     //此处 resolve 和 reject 均为函数类型
     Vue.component('async-component', function (resolve, reject) {
         setTimeout(function () {
@@ -1019,7 +1017,7 @@
     })
     ```
 * 告知webpack 通过 ajax方式加载此组件
-    ```JavaScript
+    ```vue
     Vue.component('async-webpack-example', function (resolve) {
     // 这个特殊的 `require` 语法将会告诉 webpack
     // 自动将你的构建代码切割成多个包，这些包
@@ -1029,7 +1027,7 @@
     ```
 * 直接使用import 
     * 在工厂函数中返回一个Promise对象，以访问指定组件文件，或者在局部定义组件的位置返回一个Promise对象
-    ```JavaScript
+    ```vue
     Vue.component(
     'async-webpack-example',
     // 这个 `import` 函数会返回一个 `Promise` 对象。
@@ -1044,7 +1042,7 @@
     })
     ```
     * 处理加载状态，在局部定义组件时，工厂函数可以以一下格式处理 组件 请求的状态
-    ```JavaScript
+    ```vue
     const AsyncComponent = () => ({
         // 需要加载的组件 (应该是一个 `Promise` 对象)
         component: import('./MyComponent.vue'),
@@ -1062,7 +1060,7 @@
 ## 边界处理
 * 访问根实例
     * 在根实例的所有子组件中，通过$root来访问其根组件的 data 计算属性，方法 等prop，包括读写
-    ```javascript
+    ```vue
     //子组件代码中
     let root = this.$root.rootData;
     this.$root.rootData = 2;
@@ -1070,7 +1068,7 @@
     ```
 * 访问父级组件实例  
     * 所有子组件可以通过$root来访问其父组件内的 众多类型的prop 
-    ```javascript
+    ```vue
     //子组件代码中
     let parent = this.$parent.parentData;
     this.$parent.parentData = 2;
@@ -1078,15 +1076,15 @@
     ```
 * 访问子组件实例或子元素
     * 在父组件中访问子组件实例或者子组件prop，在子组件元素 中加入 ref attribute
-    ```html
+    ```vue
     <component ref="componentData"></component>
     ```
-    ```javascript
+    ```vue
     //父组件JS代码中，访问子组件实例
     let componentData = this.$refs.componentData
     ```
     * 使用ref直接获取到DOM元素，$refs 得到的则是DOM对象
-    ```html
+    ```vue
     <input ref="input">
     ```
     *  v-for 的元素上使用 ref ，$refs.name 会返回一个数组
@@ -1095,7 +1093,7 @@
     * 当所有的子组件均需要使用父组件的方法获取信息，或者操作数据，显然使用$parent进行层级传递拥有较高的耦合
     * Vue为组件提供了 provide 和 inject选项 ，provide为后代组件提供数据/方法，inject则是指定接收那些方法
     * 依赖注入相对于$parent而言 ，使用$parent将暴露整个父级Vue实例，而依赖注入仅仅暴露方法/数据
-    ```javascript
+    ```vue
     //父级组件中，使用provide选项以返回值为对象 将自身方法暴露给后代
     provide: function () {
         return {
@@ -1114,7 +1112,7 @@
         * $on(事件名, callback) 监听事件
         * $once(事件名, callback) 监听一次事件
         * $off(事件名, callback)  取消一个事件监听
-    ```javascript
+    ```vue
     mounted: function () {
         var picker = new Pikaday({
             field: this.$refs.input,
@@ -1128,7 +1126,7 @@
     ```
 * 组件递归
     * 最典型的递归案例：父子递归，文件目录树
-    ```html
+    ```vue
     <!-- 首先父组件<tree-folder>的模板如下 -->
     <p>
     <span>{{ folder.name }}</span>
@@ -1145,14 +1143,14 @@
     * 会发现，在互相渲染时，他们互相为对方的父级/子级 ，形成悖论 ，但在全局组件声明情况下，不会悖论会自动解开
     * 在 使用模块系统 或者 异步引入组件的情况下 ，悖论会成立，组件无法正常渲染
         * 使用生命周期函数延迟注册
-            ```javascript
+            ```vue
             //父组件<tree-folder>实例中
             beforeCreate: function () {
             this.$options.components.TreeFolderContents = require('./tree-folder-contents.vue').default
             }
             ```
         * 在父实例中使用异步导入
-            ```javascript
+            ```vue
             //父组件<tree-folder>实例中
             components: {
             TreeFolderContents: () => import('./tree-folder-contents.vue')
@@ -1179,7 +1177,7 @@
             * v-leave  定义 离开动作 开始的状态，一般与 v-enter-to相同
             * v-leave-to 定义 进入动作 结束的状态 
         * 一般来说，定义其中一套过渡(指 显示到隐藏 和 隐藏到显示 )即可完成切换过渡，为定义的另外2个类会作借鉴当前元素的默认样式
-        ```html
+        ```vue
         <transition name="fade">
             <p v-if="show">hello</p>
         </transition>
@@ -1221,7 +1219,7 @@
         * leave-class
         * leave-active-class
         * leave-to-class (2.1.8+)
-        ```html
+        ```vue
         <!-- 此处name为自定义，目的为能在 -->
         <transition
             name="custom-classes-transition" 
@@ -1232,14 +1230,14 @@
 * 控制过渡的总体时间
     * 一般来讲 Vue会在 transitionend 或 animationend 事件后删除该过渡效果的DOM(对隐藏的操作而言)
     * 然而可以通过在transition 组件上的 duration prop 来在transitionend 或 animationend 触发之后(也就是css定义的过渡动画完成之后)，延迟删除该DOM元素，或显示该元素最终状态
-        ```html
+        ```vue
         <transition :duration="1000">...</transition>
         <transition :duration="{ enter: 500, leave: 800 }">...</transition>
         ```
 * JavaScript钩子，使用JS的方式控制元素的动画
     * 通过监听动画/过渡生命周期
     * 对于仅仅使用JS来完成动画/过渡的元素，在attribute上添加v-bind:css="false" 使得在渲染时跳过css的检查，并且可以避免css的影响
-        ```html
+        ```vue
         <transition
         v-on:before-enter="beforeEnter"
         v-on:enter="enter"
@@ -1254,7 +1252,7 @@
         <!-- ... -->
         </transition>
         ```
-        ```javascript
+        ```vue
         methods: {
             // 进入中
             beforeEnter: function (el) {
@@ -1299,7 +1297,7 @@
     * 使用appear attribute开启并设置 初始渲染的过渡
     * 整个appear拓展 attribute 与基础过渡类似，均为自定义样式
     * 同样也支持JS动画，使用js钩子函数
-        ```html
+        ```vue
         <transition
             appear
             appear-class="custom-appear-class"
@@ -1316,7 +1314,7 @@
         ```
 * 多个元素的过渡
     * 在transition内 多个 不同 原生 标签使用v-if/v-else-if/v-else进行切换，不用使用key attribute
-    ```html
+    ```vue
     <transition>
         <table v-if="items.length > 0">
             <!-- ... -->
@@ -1326,7 +1324,7 @@
     ```
     * 但是在相同的 原生标签之间切换，需要使用不同的key attribute 值 来标记他们，才会实习过渡效果
     * 注意2个按钮都被重新绘制，即一个离开过渡的时候另一个开始进入过渡，这是 transition 的默认行为： 进入和离开同时发生
-    ```html
+    ```vue
     <transition>
         <button v-if="isEditing" key="save">
             Save
@@ -1335,11 +1333,11 @@
             Edit
         </button>
     </transition>
-    <!-- 或者可以重写为 -->
-    <!-- 通过不同的key来设置不同的内容 -->
+    // 或者可以重写为
+    // 通过不同的key来设置不同的内容
     <transition>
         <button  :key="isEditing">
-            {{isEditing? 'Save':'Edit'}}
+            {{ isEditing? 'Save':'Edit' }}
         </button>
     </transition>
     ```
@@ -1348,7 +1346,7 @@
             * in-out 先让新元素进入过渡，完成后旧元素才能离开
             * out-in 先让旧元素离开过渡，完成后新元素才能进入
         * 注意2个按钮都被重新绘制，即一个离开过渡的时候另一个开始进入过渡，这是 transition 的默认行为： 进入和离开同时发生
-        ```html
+        ```vue
         <transition name='fade' mode='in-out'>
             <button v-if="isEditing" key="save">
                 Save
@@ -1359,7 +1357,7 @@
         </transition>
         ```
         * 如果使用多个v-if来切换元素，可用计算属性将其简化
-        ```html
+        ```vue
         <transition>
             <button v-if="docState === 'saved'" key="saved">
                 编辑
@@ -1378,8 +1376,8 @@
             </button>
         </transition>
         ```
-        ```JavaScript
-        ...
+        ```vue
+        // ...
         computed:{
             btnMessage:function (){
                 switch(this.docState){
@@ -1400,7 +1398,7 @@
     * 过渡模式(过渡的先后顺序)在其中不可用，因为不存在切换元素
     * 被v-for迭代的元素必须绑定唯一的key attribute
     * 组件上name prop 指定的样式前缀的样式会应用在各个迭代项上
-    ```html
+    ```vue
     <!-- css样式与普通过渡样式组相同 -->
     <transition-group name="list" >
         <li v-for="(item, index) in todoItems" v-bind:key="item" v-bind:title="item">
@@ -1417,7 +1415,7 @@
 # 混入(MixIn)
 * 混入提供了非常灵活的方式，使用外部定义的对象进行混入任意组件选项，其外部定义的对象直接添加到组件内部的选项中
 * 使用Vue.extend()定义一个混入的组件对象
-    ```javascript
+    ```vue
     var mixObj = {
         created:function(){
             this.hello()
@@ -1438,7 +1436,7 @@
 * 混入对象数据会与现有组件的数据合并，但当数据产生冲突时，保留原组件数据
     * 同名钩子函数将合并为一个数组，因此都将被调用。另外，混入对象的钩子将在组件自身钩子之前调用。
     * 值为对象的选项，都将合并为一个对象，键名冲突时，最终使用原组件的键值
-    ```javascript
+    ```vue
     var mixObj = {
         data:function(){
             return {
@@ -1466,7 +1464,7 @@
     //mixin call => original call
     ```
 * 全局混入，将混入对象混入到Vue顶级对象中，他会影响混入之后的每一个Vue实例
-    ```JavaScript
+    ```vue
     Vue.mixin({
         mounted:function(){
             this.$data.status ? console.log(this.$data.status) : null          
@@ -1483,13 +1481,13 @@
     ```
 * 自定义混入选项合并策略
     * 自定义选项使用默认策略，如果想改变策略，需要向Vue.config.optionMergeStrategies中添加一个方法：
-        ```javascript
+        ```vue
         Vue.config.optionMergeStrategies.custonOption = function(toValue, fromValue){
             //返回合并后的内容
         }
         ```
     * 当然可以将各个选项的默认策略做为自定义策略的参照
-        ```javascript
+        ```vue
         Vue.config.optionMergeStrategies.custonOption = Vue.config.optionMergeStrategies.methods
         //示例
         //将merge策略指定为默认的computed选项合并策略
@@ -1506,7 +1504,7 @@
         ```
 # 自定义指令
 * 全局注册自定义指令，使用顶级对象Vue.directive()
-    ```javascript
+    ```vue
         // 注册一个全局自定义指令 `v-focus`
     Vue.directive('focus', {
         // 当被绑定的元素插入到 DOM 中时……
@@ -1524,7 +1522,7 @@
     })
     ```
 * 在组件中局部注册，在组件的directives选项中添加对象
-    ```javascript
+    ```vue
      // 注册一个组件局部自定义指令 `v-focus`
     directives:{
         focus:{
@@ -1554,10 +1552,10 @@
     > 注意：除了el对象之外，所有的参数均只读，不能被重新赋值  
 * 自定义指令的动态参数
     * 自定义指令的参数可使用[]直接访问组件中的字面量
-        ```html
+        ```vue
         <p v-pin:[direction]="200">I am pinned onto the page at 200px to the left.</p>
         ```
-        ```javascript
+        ```vue
         //父组件中
         data: function () {
             return {
@@ -1577,12 +1575,12 @@
         ```
 # 过滤器
 * Vue 允许使用自定义过滤器，过滤器可用于两个位置：双花括号内、v-bind表达式中，并使用管道符号| 作为间隔
-    ```html
+    ```vue
     <div>{{message  | filterName}}</div>
     <div v-bind="message  |  filterName"></div>
     ```
 * 在组件选项内定义自定义过滤器，当全局过滤器和局部过滤器重名时，会采用局部过滤器。
-    ```js
+    ```vue
     //局部定义过滤器
     filters: {
         capitalize: function (value) {
@@ -1603,7 +1601,7 @@
     * 在上述例子中，capitalize 过滤器函数将会收到 message 的值作为第一个参数。
     * 过滤器可串联，从左往右依次进行过滤操作
     * 过滤器本质为JS函数，当然也能接受参数，但每个过滤器的第一个参数均为管道左端传递的值
-    ```html
+    ```vue
     {{message | filter1(arg2,arg3, ...) | filter2 | ...}}
     ```
 # Vue生命周期 和钩子函数
@@ -1611,7 +1609,7 @@
 ![Vue 实例生命周期](https://cn.vuejs.org/images/lifecycle.png)
 
 * 比如 created 钩子函数，执行在vm实例被创建后执行的代码，其中this指向vm对象
-   ```javascript
+   ```vue
     var vm = new Vue({
         ...
         created:function(){
@@ -1674,7 +1672,7 @@ Vue Router 是 Vue.js 官方的路由管理器。它和 Vue.js 的核心深度�
 
 ### 基于模块化js的Vue路由
 * 将Vue路由文件写成一个模块
-```js
+```vue
 import Vue from "vue";
 import VueRouter from "vue-router";
 import ...//各种需要的组件
@@ -1697,7 +1695,7 @@ export default vueRouter
 * 嵌套路由（二级路由）
 Vue提供多级路由，一个路由的子路由需要在路由模块组件中在选项内部children属性中定义
 在子级路由中，path不需要携带/开头，或者需要提供带/的绝对路径，
-```js
+```vue
 {
     //父级路由
     path: '/search-users',        
@@ -1717,7 +1715,7 @@ Vue提供多级路由，一个路由的子路由需要在路由模块组件中�
 ```
 * 使用路由（声明式）
 使用router-link创建路由链接,创建声明式路由，使用router-view设置组件切换位置
-```html
+```vue
 <router-link to="/path1">Link1</router-link>
 <router-link to="/path2">Link2</router-link>
 ...
@@ -1725,7 +1723,7 @@ Vue提供多级路由，一个路由的子路由需要在路由模块组件中�
 ```
 * 路由默认显示
 在同级路由选项中添加一个选项，设置默认路由
-```js
+```vue
 //根组件中
 {
     path:'/',
@@ -1739,7 +1737,7 @@ Vue提供多级路由，一个路由的子路由需要在路由模块组件中�
 ```
 * 路由组件缓存
 使用keep-alive标签包裹router-view标签即可
-```html
+```vue
 <keep-alive>
     <router-view></router-view>
 </keep-alive>
@@ -1747,18 +1745,18 @@ Vue提供多级路由，一个路由的子路由需要在路由模块组件中�
 
 * 向路由组件传递数据
 通过动态的向router-link内to attr传递路径来实现传值，需要在路由组件JS模块中使用:声明参数名称
-```js
+```vue
 {
     path:'detail/:id',
     component:newsDetailItem
 }
 ```
 在模板中在路径之后加入字面量或者实际值
-```html
+```vue
 <router-link :to="`/search-users/news-detail/detail/${newsItem.id}`">{{newsItem.title}}</router-link>
 ```
 最后传入的参数放置在对应路由vue组件实例的$route中，注意该数据类型一律为字符串或者对象
-```js
+```vue
 this.$route.params.id
 ```
 也可以直接向router-view中绑定props，在对应渲染的路由组件中，即可访问传入的prop
@@ -1766,7 +1764,7 @@ this.$route.params.id
 * 响应路由参数的变化
 当导航目标都是同一个路由组件，且仅仅是传递的参数值不同的时候，该路由组件实例会被复用，而不是销毁后重新创建挂载，
 因此重新访问的路由无法触发生命周期的钩子函数，但是可以通过watch监视实例本身的 $route 进行做出响应,或者使用 导航守卫 beforeRouteUpdate
-```js
+```vue
 watch:{
     $route(to,from){
         //对变化做出响应
@@ -1781,7 +1779,7 @@ beforeRouteUpdate (to, from, next) {
 
 * 命名路由
 在路由模块route中，每个路由可以使用name属性进行命名，使用时比较方便
-```JS
+```vue
 {
     path:'detail/:id',
     name:'detailItem',
@@ -1789,13 +1787,13 @@ beforeRouteUpdate (to, from, next) {
 }
 ```
 然后向router-link的to中传递一个对象
-```html
+```vue
 <router-link :to="{ name: 'detailItem', params: { id: 123 }}">detail</router-link>
 ```
 
 * 编程式 路由
 借助this.$router的方法，通过编写代码实现路由跳转
-```js
+```vue
 //向浏览器history栈推入一个历史记录，并跳转到这个页面
 this.$router.push(绝对路径) 
 //替换掉当前history的记录，当前地址成为history栈顶
@@ -1807,11 +1805,11 @@ this.$router.back() 后退一步
 
 ```
 相当于
-```html
+```vue
 <router-link :to="绝对路径">
 ```
 更多的参数：传入的对象中path 和 params属性不能同时出现，否则仅前者有效
-```js
+```vue
 //传入一个对象，带有path属性
 this.$router.push({path:'绝对路径'}) 
 //传入一个对象，带有目标路由的选项：名称以及参数
@@ -1859,7 +1857,7 @@ Vuex的核心包含三部分：
 
 1. 构建核心模块文件`store.js`
 
-   ```js
+   ```vue
    import Vue from 'vue'
    import VueX from 'vuex'
    Vue.use(VueX)
@@ -1887,7 +1885,7 @@ Vuex的核心包含三部分：
 
 2. 在入口文件`main.js`中导入模块，并加入`vue主对象`中，此时`store`被实例化为对象，并且这个对象被映射到了`vue全局`组件对象的`$store`属性中
 
-   ```js
+   ```vue
    //...
    import store from './store'
    Vue.config.productionTip = false
@@ -1907,7 +1905,7 @@ Vuex的核心包含三部分：
     
      * 注意直接不能直接对`getter`对象中的方法进行调用，而是返回调用的函数，通知vue会通知vuex调用该方法
      
-     ```js
+     ```vue
      //组件中
      computed: {
          evenOrOdd () {
@@ -1927,7 +1925,7 @@ Vuex的核心包含三部分：
      
    * 在组件的事件触发的回调函数中，使用`this.$store.dispatch('ActionName')`来触发对应的`Action`
    
-     ```js
+     ```vue
      //组件内部
      methods: {
          handelPlus () {
@@ -1943,7 +1941,7 @@ Vuex的核心包含三部分：
    
      * 在`action`对象方法中可以直接执行异步代码
      
-     ```js
+     ```vue
      //store.js
      const actions = {
        handelPlus ({commit,state}) { //得到传入的函数对象commit，也可以得到state
@@ -1954,7 +1952,7 @@ Vuex的核心包含三部分：
    
    * 通过调用`commit("MutationName")`来更新状态，`MutationName`均为`mutate`对象的方法，在这些方法内可对对应状态进行直接操作
    
-     ```js
+     ```vue
      //store.js
      const mutations = {
          //放置底层更新函数
@@ -1974,7 +1972,7 @@ Vuex的核心包含三部分：
 
 * `mapGetters(['computedPropName',...])`：传入一个计算属性名的数组 返回一个计算属性的对象，内部包含对传入数组中每个计算属性的getter
 
-  ```js
+  ```vue
   // 组件中
   computed: {
       ...mapState(['count']),
@@ -1999,7 +1997,7 @@ Vuex的核心包含三部分：
 
 * `mapAction(['actionName',...])`：返回一个回调函数的对象，内部拥有所有传入数组内的函数
 
-  ```js
+  ```vue
   //考虑到methods中可能有其他私有的callback，推荐使用第一种方式
   methods: {
   	...mapActions(['handelDec','handelPlus','handelPlusIfEven','handelPlusAsync']),
@@ -2022,7 +2020,7 @@ Vuex的核心包含三部分：
 
 Vuex允许将`store`对象分隔为不同模块，每个模块拥有自己的 state、mutation、action、getter、甚至可以嵌套子模块
 
-```js
+```vue
 const moduleA = {
   state: () => ({ ... }),
   mutations: { ... },
@@ -2049,7 +2047,7 @@ store.state.b // -> moduleB 的状态
 
 在每个模块内部，的`getter`和`mutations`对象内部方法的第一个参数均为模块局部的`state`对象，对于模块内部的 action，局部状态通过 `state` 暴露出来，根节点状态则为 `rootState`
 
-```js
+```vue
 const moduleA = {
   // ...
     actions: {
@@ -2072,7 +2070,7 @@ const moduleA = {
 
   默认情况下，模块的`state对象`拥有独立的命名空间（作用域），模块内部的 `action、mutation 和 getter 对象`中的方法是注册在**全局命名空间**的，换句话说就是继承父级命名空间，，因此不同模块直接如果对应的store子对象拥有相同的方法名时，会产生冲突；可以通过在模块内部添加`namespaced:true`来使其成为带命名空间的模块（产生命名作用域），在访问拥有命名空间的 `action、mutation 和 getter 对象`时，需要在方法前添加对模块名：
 
-  ```js
+  ```vue
   const store = new Vuex.Store({
     modules: {
       account: {
@@ -2119,7 +2117,7 @@ const moduleA = {
 
 当使用 `mapState`, `mapGetters`, `mapActions` 和 `mapMutations` 这些函数来绑定带命名空间的模块时：
 
-```js
+```vue
 computed: {
   ...mapState('some/nested/module', {
     a: state => state.a,
@@ -2136,7 +2134,7 @@ methods: {
 
 或者使用：`createNamespacedHelpers('some/nested/module')`，指向mapXxx到某个模块的命名空间
 
-```js
+```vue
 import { createNamespacedHelpers } from 'vuex'
 
 const { mapState, mapActions } = createNamespacedHelpers('some/nested/module')
