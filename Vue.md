@@ -21,7 +21,7 @@
 
         ```html
         <a v-bind:[attribute_name]="url" ></a>
-        ``` 
+        ```
         ```JavaScript
         var vm = new Vue({
             ...
@@ -101,7 +101,7 @@
 
 ### 计算属性
 * 使用视图模型的计算属性 app.computed:{} ，用于 将data中的数据模型进行计算，必须使用return返回
-    
+  
     ```JavaScript
     computed:{
         属性1(){
@@ -144,6 +144,13 @@
     watch:{
         data中的属性值 :function(newVal , oldVal){
             //当监视的值发送改变时，执行此回调函数 this为顶级对象vm
+        }
+    }
+    //开启深度监视，即监视对象内部数据变化
+    watch:{
+        deep:true,
+        handler:function(newVal,oldVal){
+            // ...
         }
     }
     ```
@@ -189,7 +196,7 @@
             ```
             ```html
             <div v-bind:class = "classObj"></div>
-            ```    
+            ```
     * 绑定数组
         * 直接绑定一个数组，其中元素为 data中字符串的属性
             ```javascript
@@ -215,7 +222,7 @@
     * 绑定一个对象{} ，内部样式名 为驼峰式命名 ，其值为 vm对象的属性 ,如果传递进一个多重值，默认使用最后一个
         ```html
             <div v-bind:style = "{color : colorStyle , fontSize: fontSize + 'px'}"></div>
-        ```   
+        ```
     * 直接绑定一个vm对象属性 
         ```javascript
             data: {
@@ -411,7 +418,7 @@
             alert(message);
         }
     }
-    ```
+   ```
     ```html
     <button v-on:click="callback('hello', $event)">hello</button>
     ```
@@ -463,9 +470,9 @@
         * .alt
         * .shift
         * .meta 在windows系统上对应Win键，在mac系统上对应command键
-
+    
         > 此类按键在与其他按键组合keyup的时候，需要按住系统功能按键，再触发普通按键keyup才会触发相应事件
-
+    
     ```html
     <input v-on:按键动作.按键码1.按键码2="callback">
     <input v-on:keyup.ctrl.67 = "copy" >
@@ -474,7 +481,7 @@
     * .exact 修饰符，允许精准控制一个按键事件
         ```html
         <input v-on:click.ctrl.exact= "submit" > 只有 Ctrl 键被按下时才会触发
-
+    
         ```
 
 # 表单双向绑定
@@ -626,13 +633,13 @@
     ```
 * 如果要使这种方式能在子组件中使用则在子组件对象内加入子组件
     ```javascript
-    var component1 = {//...}
-    var component2 = {
+    var component1 = {...}
+    var component2 = {{
         components : {
             'component-1' :  component1
         }
     }
-    var component3 = {//...}
+    var component3 = {...}
     ```
 ## Prop
 * HTML中对attribute的大小写不敏感，但浏览器最终会全部解析成小写字母
@@ -906,7 +913,7 @@
     <!-- 解构赋值，将变量重命名 -->
     <current-user>
         <template v-slot:default="{ user : person }">
-            {{ user.firstName }}
+            {{ person.firstName }}
         </template>
     </current-user>
     <!-- 设置默认值-->
@@ -919,7 +926,6 @@
     </current-user>
     ```
 * 当指令只有参数的时候(:后面的值) 插槽指令可缩写为 # ，可替换一切v-slot:
-    * 
     ```html
     <!-- 子组件模板 -->
     <span>
@@ -927,7 +933,7 @@
             {{ user.lastName }}
         </slot>
         <template #header>
-            <!-- header内容 -->
+            {{header.user.lastName}}
         </template>
     </span>
     <!-- 父组件使用子组件 -->
@@ -1078,7 +1084,7 @@
     ```javascript
     //父组件JS代码中，访问子组件实例
     let componentData = this.$refs.componentData
-    ```  
+    ```
     * 使用ref直接获取到DOM元素，$refs 得到的则是DOM对象
     ```html
     <input ref="input">
@@ -1333,7 +1339,7 @@
     <!-- 通过不同的key来设置不同的内容 -->
     <transition>
         <button  :key="isEditing">
-            {{isEditing? 'Save':'Edit'}}
+            {{isEditing? 'Save':'Edit'}
         </button>
     </transition>
     ```
@@ -1600,7 +1606,10 @@
     ```html
     {{message | filter1(arg2,arg3, ...) | filter2 | ...}}
     ```
-# Vue生命周期 钩子函数
+# Vue生命周期 和钩子函数
+
+![Vue 实例生命周期](https://cn.vuejs.org/images/lifecycle.png)
+
 * 比如 created 钩子函数，执行在vm实例被创建后执行的代码，其中this指向vm对象
    ```javascript
     var vm = new Vue({
@@ -1609,11 +1618,16 @@
             console.log(this) // vm
         }
     })
-    ``` 
+   ```
 * 在vm的属性或者各种callback函数上，不要使用箭头函数，因为会因为this而无法找到对象
 
 
 # 使用脚手架搭建Vue项目
+```npm
+npm install -g vue-cli
+vue init webpack 项目名
+npm run dev 
+```
 使用Vue-cli搭建基础Vue结构
 项目结构：
     * build ：存放打包所使用的webpack文件
@@ -1639,3 +1653,508 @@
     * 通过main.js打包好的js文件放入HTML给浏览器执行
 
 ## 打包Vue项目
+```npm
+npm run build
+
+```
+# Vue Ajax
+### 使用Axios
+
+
+# Vue路由
+Vue Router 是 Vue.js 官方的路由管理器。它和 Vue.js 的核心深度集成，让构建单页面应用变得易如反掌。包含的功能有：
+* 嵌套的路由/视图表
+* 模块化的、基于组件的路由配置
+* 路由参数、查询、通配符
+* 基于 Vue.js 过渡系统的视图过渡效果
+* 细粒度的导航控制
+* 带有自动激活的 CSS class 的链接
+* HTML5 历史模式或 hash 模式，在 IE9 中自动降级
+* 自定义的滚动条行为
+
+### 基于模块化js的Vue路由
+* 将Vue路由文件写成一个模块
+```js
+import Vue from "vue";
+import VueRouter from "vue-router";
+import ...//各种需要的组件
+Vue.use(VueRouter)
+const routes = [
+  {
+    path: '/todoList',
+    component: todoList
+  },
+  // 路由映射组件对象数组
+]
+//创建实例
+const vueRouter = new VueRouter({
+  routes
+})
+//默认暴露
+export default vueRouter
+
+```
+* 嵌套路由（二级路由）
+Vue提供多级路由，一个路由的子路由需要在路由模块组件中在选项内部children属性中定义
+在子级路由中，path不需要携带/开头，或者需要提供带/的绝对路径，
+```js
+{
+    //父级路由
+    path: '/search-users',        
+    component: searchUsersInfo,
+    //子级路由
+    children: [
+      {
+        path: 'news',
+        component: news
+      },
+      {
+        path: 'news-detail',
+        component: newsDetail
+      }
+    ]
+  },
+```
+* 使用路由（声明式）
+使用router-link创建路由链接,创建声明式路由，使用router-view设置组件切换位置
+```html
+<router-link to="/path1">Link1</router-link>
+<router-link to="/path2">Link2</router-link>
+...
+<router-view></router-view>
+```
+* 路由默认显示
+在同级路由选项中添加一个选项，设置默认路由
+```js
+//根组件中
+{
+    path:'/',
+    redirect:'todo-list'    // 为子组件的相对路径
+}
+// 子路由中
+{
+    path:'',
+    redirect:'news'
+}
+```
+* 路由组件缓存
+使用keep-alive标签包裹router-view标签即可
+```html
+<keep-alive>
+    <router-view></router-view>
+</keep-alive>
+```
+
+* 向路由组件传递数据
+通过动态的向router-link内to attr传递路径来实现传值，需要在路由组件JS模块中使用:声明参数名称
+```js
+{
+    path:'detail/:id',
+    component:newsDetailItem
+}
+```
+在模板中在路径之后加入字面量或者实际值
+```html
+<router-link :to="`/search-users/news-detail/detail/${newsItem.id}`">{{newsItem.title}}</router-link>
+```
+最后传入的参数放置在对应路由vue组件实例的$route中，注意该数据类型一律为字符串或者对象
+```js
+this.$route.params.id
+```
+也可以直接向router-view中绑定props，在对应渲染的路由组件中，即可访问传入的prop
+
+* 响应路由参数的变化
+当导航目标都是同一个路由组件，且仅仅是传递的参数值不同的时候，该路由组件实例会被复用，而不是销毁后重新创建挂载，
+因此重新访问的路由无法触发生命周期的钩子函数，但是可以通过watch监视实例本身的 $route 进行做出响应,或者使用 导航守卫 beforeRouteUpdate
+```js
+watch:{
+    $route(to,from){
+        //对变化做出响应
+        //to为当前地址的历史记录对象，from为上一个历史记录的对象
+    }
+}
+beforeRouteUpdate (to, from, next) {
+    //对变化做出响应
+    // next为回调函数
+  }
+```
+
+* 命名路由
+在路由模块route中，每个路由可以使用name属性进行命名，使用时比较方便
+```JS
+{
+    path:'detail/:id',
+    name:'detailItem',
+    component:newsDetailItem
+}
+```
+然后向router-link的to中传递一个对象
+```html
+<router-link :to="{ name: 'detailItem', params: { id: 123 }}">detail</router-link>
+```
+
+* 编程式 路由
+借助this.$router的方法，通过编写代码实现路由跳转
+```js
+//向浏览器history栈推入一个历史记录，并跳转到这个页面
+this.$router.push(绝对路径) 
+//替换掉当前history的记录，当前地址成为history栈顶
+this.$router.replace(绝对路径) 
+//对history进行具体数目的出栈操作(历史后退)
+this.$router.go(1)  前进一个页面
+this.$router.go(-1)  后退一个页面
+this.$router.back() 后退一步
+
+```
+相当于
+```html
+<router-link :to="绝对路径">
+```
+更多的参数：传入的对象中path 和 params属性不能同时出现，否则仅前者有效
+```js
+//传入一个对象，带有path属性
+this.$router.push({path:'绝对路径'}) 
+//传入一个对象，带有目标路由的选项：名称以及参数
+this.$router.push({name:'Component1',params:{id : 123}})
+// 带查询参数，变成 /register?plan=private
+router.push({ path: 'register', query: { plan: 'private' }})
+```
+
+# Vuex
+
+对Vue应用当中的多个组件的共享状态进行集中式的管理
+
+## 状态自管理应用
+
+Vuex的核心包含三部分：
+
+* state：驱动应用的数据源
+* view：以声明方式将state映射到视图
+* action：响应在View上的用户输入而更新相应view的函数，换句话说，就是控制器
+* stroe.js：核心管理对象模块
+  * 属性：
+    * state对象：注册状态
+    * getters对象：注册状态的getter
+  * 方法：
+    * dispatch()：
+
+## 多组件共享状态
+
+在基础的vue数据传递中，我们常常将多个组件的状态放入他们相同的父级、祖级组件中，在传递数据时候，常常需要一层一层的传递，当众多组件需要同时获取和修改某个状态时，vuex可以解决这个问题
+
+## Vuex更新状态循环
+
+![image-20200717201117358](C:\Users\Fusion\AppData\Roaming\Typora\typora-user-images\image-20200717201117358.png)
+
+1. 当用户通过`Vue组件`触发一个`函数`时，`函数`的调用不会从Action直接指向`State`而直接更新数据
+2. 函数的调用会触发`Actions组件`的`commit方法`提交给`Vuex`内部的`Mutations组件`进行管理，再由`Mutations组件`来更新`托管的state`状态数据
+3. `Mutations组件`同时可以与开发工具进行信息交流
+4. 在发布更新数据的`Action组件`中，可以通过与后端API交互，决定如何更新当前状态
+5. 在以`Vuex`编写`getter对象`时，遵循`上层简单`原则，使组件直接通过映射的`getter`拿到`准确`的数据
+6. 在共享状态被分类管理的时候，建议使用多个store模块进行分别托管，每个模块就是一个store配置对象，来对应相应使用的组件组
+
+## Vuex的使用
+
+此处省略安装vuex
+
+1. 构建核心模块文件`store.js`
+
+   ```js
+   import Vue from 'vue'
+   import VueX from 'vuex'
+   Vue.use(VueX)
+   const state = {
+       count:0
+     	//放入需要管理的状态
+   }
+   const mutations = {
+   
+   }
+   const actions = {
+   	//放入事件所对应触发的回调函数
+   }
+   const getters = {
+   	//放入需要管理的计算属性
+   }
+   //默认暴露 store对象
+   export default new VueX.Store({
+     state,    //状态对象
+     mutations,//包含多个更新state的函数的对象
+     actions,//包含多个对应事件的回调函数的对象
+     getters//包含对state进行get操作的多个getter对象，多数为计算属性
+   })
+   ```
+
+2. 在入口文件`main.js`中导入模块，并加入`vue主对象`中，此时`store`被实例化为对象，并且这个对象被映射到了`vue全局`组件对象的`$store`属性中
+
+   ```js
+   //...
+   import store from './store'
+   Vue.config.productionTip = false
+   
+   /* eslint-disable no-new */
+   new Vue({
+     //...
+     store,
+   })
+   ```
+
+3. 在需要管理状态数据的组件中使用`store`对象
+
+   * 使用`this.$store.state`直接访问托管的状态
+   
+   * 组件的计算属性需要访问`store`的`getter`对象中所对应的方法，来通知vuex进行返回状态，从而获取数据
+    
+     * 注意直接不能直接对`getter`对象中的方法进行调用，而是返回调用的函数，通知vue会通知vuex调用该方法
+     
+     ```js
+     //组件中
+     computed: {
+         evenOrOdd () {
+             //再此处通知vuex调用函数，而非直接调用
+             return this.$store.getters.evenOrOdd
+         }
+     }
+     //vuex的store.js中
+     const getters = {
+         evenOrOdd () {
+             return state.count % 2 === 0 ? '偶数' : '奇数'
+         }
+    }
+     ```
+    
+     
+     
+   * 在组件的事件触发的回调函数中，使用`this.$store.dispatch('ActionName')`来触发对应的`Action`
+   
+     ```js
+     //组件内部
+     methods: {
+         handelPlus () {
+             this.$store.dispatch('handelPlus')
+      },
+     
+     ```
+
+  }
+     ```
+
+   * 每一个`ActionName`均为一个方法，定义在`action`对象中，每个方法可以对状态进行更多的操作，最终决定是否调用参数传递进来的`commit()`
+   
+     * 在`action`对象方法中可以直接执行异步代码
+     
+     ```js
+     //store.js
+     const actions = {
+       handelPlus ({commit,state}) { //得到传入的函数对象commit，也可以得到state
+      commit('INCREMENT'); //提交至mutate对象相应方法	
+       },
+    }
+     ```
+   
+   * 通过调用`commit("MutationName")`来更新状态，`MutationName`均为`mutate`对象的方法，在这些方法内可对对应状态进行直接操作
+   
+     ```js
+     //store.js
+     const mutations = {
+         //放置底层更新函数
+         INCREMENT (state){ //需要传入state
+          state.count++
+         }
+     }
+     ```
+   
+     
+
+## 使用vuex核心对象映射简化代码
+
+在组件内部模板上直接使用`$store.state.xxx`，并不是一个好的习惯，而且在组件内的计算属性以及`methods`中的回调函数内部均存在大量相同的代码片段`this.$store.XXX`，对于庞大的vue项目来说，这回多出非常多的重复代码，而且state可能不好维护，通过从`vuex`引入 `mapState mapGetters mapActions`等对象，在对要使用到的状态以及回调`Action`等进行集中管理
+
+* `mapState(['stateName',...])`：将传入的托管的状态组以一个计算属性的对象进行返回，内部包含对传入数组中每个state的getter
+
+* `mapGetters(['computedPropName',...])`：传入一个计算属性名的数组 返回一个计算属性的对象，内部包含对传入数组中每个计算属性的getter
+
+  ```js
+  // 组件中
+  computed: {
+      ...mapState(['count']),
+      ...mapGetters(['evenOrOdd']),
+  }
+  // 或者这样也行
+  computed: {
+      ...mapState({
+          'count':'count',
+      }),
+      ...mapGetters({
+          'evenOrOdd':'evenOrOdd'
+      }),
+  }
+  // 不使用...，但只能使用其中一个map
+  computed:mapGetters({
+  	'evenOrOdd':'evenOrOdd'
+  }),
+  ```
+
+  
+
+* `mapAction(['actionName',...])`：返回一个回调函数的对象，内部拥有所有传入数组内的函数
+
+  ```js
+  //考虑到methods中可能有其他私有的callback，推荐使用第一种方式
+  methods: {
+  	...mapActions(['handelDec','handelPlus','handelPlusIfEven','handelPlusAsync']),
+      //...
+  }
+  //或者 组件回调函数名必须与ActionName一致
+  methods: mapActions(['handelDec','handelPlus','handelPlusIfEven','handelPlusAsync'])
+  //或者，左侧为组件中使用的回调函数名，右侧为ActionName
+  methods: mapActions({
+      'handelDec':'handelDec',
+      'handelPlus':'handelPlus',
+      'handelPlusIfEven':'handelPlusIfEven',
+      'handelPlusAsync':'handelPlusAsync'
+  })
+  ```
+
+  
+
+## 使用模块分别管理各类store
+
+Vuex允许将`store`对象分隔为不同模块，每个模块拥有自己的 state、mutation、action、getter、甚至可以嵌套子模块
+
+```js
+const moduleA = {
+  state: () => ({ ... }),
+  mutations: { ... },
+  actions: { ... },
+  getters: { ... }
+}
+
+const moduleB = {
+  state: () => ({ ... }),
+  mutations: { ... },
+  actions: { ... }
+}
+
+const store = new Vuex.Store({
+  modules: {
+    a: moduleA,
+    b: moduleB
+  }
+})
+
+store.state.a // -> moduleA 的状态
+store.state.b // -> moduleB 的状态
+```
+
+在每个模块内部，的`getter`和`mutations`对象内部方法的第一个参数均为模块局部的`state`对象，对于模块内部的 action，局部状态通过 `state` 暴露出来，根节点状态则为 `rootState`
+
+```js
+const moduleA = {
+  // ...
+    actions: {
+         incrementIfOddOnRootSum ({ state, commit, rootState }) {
+             if ((state.count + rootState.count) % 2 === 1) {
+                 commit('increment')
+             }
+        }
+    },
+    getters: {
+        sumWithRootCount (state, getters, rootState) {
+            return state.count + rootState.count
+        }
+    }
+}
+
+```
+
+* 命名空间
+
+  默认情况下，模块的`state对象`拥有独立的命名空间（作用域），模块内部的 `action、mutation 和 getter 对象`中的方法是注册在**全局命名空间**的，换句话说就是继承父级命名空间，，因此不同模块直接如果对应的store子对象拥有相同的方法名时，会产生冲突；可以通过在模块内部添加`namespaced:true`来使其成为带命名空间的模块（产生命名作用域），在访问拥有命名空间的 `action、mutation 和 getter 对象`时，需要在方法前添加对模块名：
+
+  ```js
+  const store = new Vuex.Store({
+    modules: {
+      account: {
+        namespaced: true,
+  
+        // 模块内容（module assets）
+        state: () => ({ ... }), // 模块内的状态已经是嵌套的了，使用 `namespaced` 属性不会对其产生影响
+        getters: {
+          isAdmin () { ... } // -> getters['account/isAdmin']
+        },
+        actions: {
+          login () { ... } // -> dispatch('account/login')
+        },
+        mutations: {
+          login () { ... } // -> commit('account/login')
+        },
+  
+        // 嵌套模块
+        modules: {
+          // 继承父模块的命名空间
+          myPage: {
+            state: () => ({ ... }),
+            getters: {
+              profile () { ... } // -> getters['account/profile']
+            }
+          },
+  
+          // 进一步嵌套命名空间
+          posts: {
+            namespaced: true,
+  
+            state: () => ({ ... }),
+            getters: {
+              popular () { ... } // -> getters['account/posts/popular']
+            }
+          }
+        }
+      }
+    }
+  })
+  ```
+
+如果你希望使用全局 state 和 getter，`rootState` 和 `rootGetters` 会作为第三和第四参数传入 getter，也会通过 `context` 对象的属性传入 action。
+
+当使用 `mapState`, `mapGetters`, `mapActions` 和 `mapMutations` 这些函数来绑定带命名空间的模块时：
+
+```js
+computed: {
+  ...mapState('some/nested/module', {
+    a: state => state.a,
+    b: state => state.b
+  })
+},
+methods: {
+  ...mapActions('some/nested/module', [
+    'foo', // -> this.foo()
+    'bar' // -> this.bar()
+  ])
+}
+```
+
+或者使用：`createNamespacedHelpers('some/nested/module')`，指向mapXxx到某个模块的命名空间
+
+```js
+import { createNamespacedHelpers } from 'vuex'
+
+const { mapState, mapActions } = createNamespacedHelpers('some/nested/module')
+
+export default {
+  computed: {
+    // 在 `some/nested/module` 中查找
+    ...mapState({
+      a: state => state.a,
+      b: state => state.b
+    })
+  },
+  methods: {
+    // 在 `some/nested/module` 中查找
+    ...mapActions([
+      'foo',
+      'bar'
+    ])
+  }
+}
+```

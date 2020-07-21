@@ -1,0 +1,1116 @@
+# React是什么？
+React 是一个声明式，高效且灵活的用于构建用户界面的 JavaScript 库。使用 React 可以将一些简短、独立的代码片段组合成复杂的 UI 界面，这些代码片段被称作“组件”。
+# JSX
+JSX是JavaScript的扩展语法  JavaScript Extend。在React中使用JSX，JSX 可以很好地描述 UI 应该呈现出它应有交互的本质形式，且具有 JavaScript 的全部功能，JSX 可以生成 React “元素”。
+## 为什么要使用JSX？
+* React认为 元素的逻辑和以及UI存在一定的耦合，一些HTML元素与JS的事件操作相连，但是React并没有采用将视图和逻辑处理分离在不同的文件中，而是将视图和逻辑处理一同存放在称之为“组件”的松散耦合的单元内，实现 关注点分离 ，JSX本身也是一种表达式，在最终打包编译时会转换为普通的JS文件
+* JSX 能有效防止注入攻击( XSS )：在React DOM 渲染所有内容之前都被转换成了字符串
+
+## JSX属性
+使用大括号{}可插入JavaScript表达式，使用引号""直接插入字符串值
+## JSX 变量命名
+JSX的元素属性跟随React DOM使用小驼峰命名 className，不是使用HTML的属性 命名约定
+JSX对于元素的声明，类似xml，当标签内部无内容时，可直接使用 /> 来进行闭合
+## JSX 的表示对象
+Bable规范会将JSX转译成一个名为 React.createElement() 函数调用，React.createElement() 会预先执行一些检查，并在内部创建一个React元素 对象
+```js
+const element = (<h1 className="welcome">hello</h1>)
+//等价于
+const element = React.createElement(
+  'h1',
+  {className: 'greeting'},
+  'Hello, world!'
+);
+//相当于创建了这个对象
+const element = {
+    type:'h1',
+    props:{
+        className:'welcome',
+        children:'hello'
+    }
+}
+```
+# React元素渲染
+* React 元素元素描述了你在屏幕上想看到的内容，此处的React元素非 React组件
+* React 元素 是构成 React 应用的最小砖块，且React DOM 会负责更新 浏览器原生DOM 来与 React 元素保持一致。
+## 渲染React 元素为 浏览器 DOM
+id为root的根节点的所有内容均由React DOM管理，仅使用 React 构建的应用通常只有单一的根 DOM 节点。 
+将 React 集成进一个已有应用，那么可以在应用中包含任意多的独立根 DOM 节点。
+
+* 想要将React 元素 渲染到DOM中，只需要将它们传入到 ReactDOM.render() 中
+```js
+const element = <h1>Hello there</h1>
+ReactDOM.render(element,document.getElementById('root'))
+```
+
+## 更新已渲染的React 元素
+React元素使用const 进行声明，所以为不可变对象，一旦被创建，就无法更改它的子元素或者属性，此时这个React元素表了某个特定时刻的 UI  
+更新UI的唯一方式就是创建一个全新的元素，使用ReactDOM.render()重新进行渲染。  
+想要定时更新UI ，使用window.setInterval()重新声明React元素，调用render()即可 而且 React 只更新它需要更新的部分
+
+```jsx
+//动态渲染当前时间
+function currentTime() {
+  const element = (
+    <div>
+      <h1>你好世界!</h1>
+      <h2>当前时间： {new Date().toLocaleTimeString()}.</h2>
+    </div>
+  );
+  ReactDOM.render(element, document.getElementById('root'));
+}
+
+setInterval(currentTime, 1000);
+```
+## React组件和Prop
+组件: 将UI拆分为独立可复用的代码片段，每个片段拥有独立的构思
+组件名称必须以大写字母开头
+
+* 组件的定义方式
+
+  * 使用JS函数进行返回一个 React元素 来创建一个函数组件
+
+    ```js
+    function Hello(props){
+        return <h1>Hello World,I'm {props.name}</h1>
+    }
+    ```
+
+    * 组件名字首字母一定是大写的
+
+    * 返回一个jsx、或者一个字符串，jsx依赖React，所以组件内部需要引入React
+    * 使用
+      * 以标签的方式使用`<Component/>` ，
+        * 组件标内的内容不会展示出来
+        * 组件的attributes内className不起作用
+      * 直接在双括号内调用`{ Component() }`
+
+    * 组件传参
+      * 传递： <Component list={ arrData }><Component>
+      * 接收： function Component( props ){...}
+      * 使用： const { list } = props，list就是参数数据 
+
+    * 缺点：
+      * 无状态组件：只能实现很简单的视图展示功能，没有自己的内容数据、没有状态，没有逻辑处理，
+      * 没有this
+      * 没有生命周期
+        * 16.7以后版本的react有状态和钩子函数提供使用
+      * 内部不用render函数，会自动把return返回结果当做render返回结果
+
+  
+
+  * 使用ES6的类(class)继承机制来定义类组件
+
+    ```jsx
+    class Hello extends React.Component{
+        render(){
+            return (
+                <h1>Hello World,I'm {this.props.name}</h1>
+            )
+        }
+    }
+    ```
+
+    
+
+### 渲染组件
+react元素可以是普通HTML标签，也可以是自定义组件标签
+```jsx
+const element = <Hello name="jack" />
+ReactDom.render(element, document.getElementById('root'))
+```
+### 组合组件
+可以将多个组件组合起来组成另一个React元素，但是每个React应用的最顶层组件都是App组件
+
+### 拆分组件
+将组件拆分为更小的组件，在通过attribute方式传递值
+
+### props的只读性质
+在JS中 ，不改变传入参数的函数称之为 纯函数，相反，在函数执行过程中改变了参数的函数称之为 非纯函数，
+所有React的组件必须像纯函数一样保护props，props无法被组件自身修改， 但是state可以
+
+### state 以及 生命周期
+State 与 props 类似，但是 state 是私有的，并且完全受控于当前组件，state声明在以class创建的React组件内部的constructor中，通过传入props，使得state可以接收props传递的数据  
+当组件第一次被渲染到页面时，在React生命周期中称为 挂载(mount)， 当组件被删除时，称之为卸载(unmount)  
+componentDidMount() 方法会在组件已经被渲染到 DOM 中后运行 
+componentWillUnmount() 方法会在组件在DOM删除之前 运行
+
+```jsx
+class ClockComponent extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      data:new Date()
+    };
+
+    componentDidMount(){
+      this.clockInterval = setInterval(
+        ()=>this.clock(),
+        1000
+      )
+    }
+    componentWillUnmount(){
+      clearInterval(this.clockInterval);
+    }
+
+    clock(){
+      this.setState({
+        data:new Date()
+      });
+    }
+
+    render(){
+      return (
+        <div>
+        <span>{this.state.data.toLocaleTimeString()}</span>
+        </div>
+      );
+    }
+  }
+}
+ReactDOM.render(<ClockComponent />, document.getElementById('root'));
+```
+### State 注意事项
+不要直接修改state： this.state.xxx = 'xxx'; 为错误方法
+使用this.setState()传入新对象进行更新，构造函数是唯一可以给 this.state 赋值的地方
+
+this.setState()，该方法接收两种参数：对象或函数:
+* 对象：要修改的state的对象形式；
+* 函数：接收2个函数：  
+第一个函数：参数为state和props，返回类型为一个对象，为state对象的形式  
+第二个函数：在state改变后触发的回调函数
+
+### State 的更新可能是异步的
+* 出于性能考虑，React 可能会把多个 setState() 调用合并成一个调用
+
+每当调用this.setState()时，不一定同步更新内部state数据，换句话说，this.state()可能不会立即执行 ,因此不会造成阻塞
+
+* setState何时同步何时异步？
+由React控制的事件处理函数:React封装的事件，比如onChange、onClick、onTouchMove等，以及生命周期函数调用setState()不会同步(立刻)更新state 。
+
+例如在点击按钮直接调用this.setState()的时候，React不会立即更新state中的内容，而是先渲染到页面上，延迟更新state
+```jsx
+constructor(props) {
+    super(props);
+    this.state = {
+        data:'a'
+    };
+    this.click = this.click.bind(this)
+}
+click(){
+  this.setState({data:'b'});
+  console.log(this.state.data); // log -> a
+}
+```
+要解决显示改变的结果，则将参数改为双函数传入setState()，在回调函数中进行输出
+```jsx
+click(){
+  this.setState((state,props)=>({
+    data:'b'
+    }),()=>{
+      console.log(this.state.data); // log -> b 
+    });
+  
+}
+```
+React控制之外的事件中调用setState是同步更新的。比如原生js绑定的事件，setTimeout/setInterval等。
+
+### State 的更新会被合并
+当调用 setState() 的时候，React 会把你提供的对象合并到当前的 state，React的state的更新为浅合并，可以单独的更新(替换)指定的一个或者多个变量，而不需要提供整个state。
+
+### 数据是向下流动的
+* React中不管是任何等级的组件，都无法知道其他组件的state，依靠state的局部封装特征  
+
+* 父组件可以使用它的state作为一个子组件的attribute 向下 传递到子组件的props中，但是子组件无法得知传入的props数据是来自子组件的默认props值，还是来自于子组件的state、或者手动设置的props（从实验来看，props是只读对象）  
+
+* 任何的 state 总是所属于特定的组件，而且从该 state 派生的任何数据或 UI 只能影响树中“低于”它们的组件。
+
+## 事件处理
+React的时间均采用小驼峰式命名 camelCase 在JSX语法中 需要传入一个{}包裹的函数，而不是""包裹的字符串,且{}中可以为真值表达式、或者三目运算表达式  
+```jsx
+<button onClick={activateLasers}>
+  Activate Lasers
+</button>
+```
+同样在回调函数中，使用参数e或者ev、event来访问事件对象    
+
+在 JavaScript 中，class 的方法默认不会绑定 this。所有在class内部自定义的函数，都需要在构造器内部使用bind将this进行绑定  
+或者不使用这种绑定，在声明自定义函数的时候可将函数变为一个箭头函数，或者在绑定事件处，将未绑定的函数作为函数体
+
+```js
+onClickHandler = (e) =>{
+  //函数处理
+}
+<button onClick = {this.onClickHandler}></button>
+
+
+onClickHandler (e) {
+  //函数处理
+}
+<button onClick = { ()=>this.onClickHandler() }></button>
+```
+### 向事件处理函数中传递参数
+通常在一些列表中需要为每一项的删除、修改等按钮  
+
+在绑定事件时使用箭头函数，事件对象event必须显式传递  
+```jsx
+<button onClick = { (e)=>this.onClickHandler(e, id) }></button>
+```
+在事件回调为箭头处理函数的时候，需要通过bind方式，事件对象会被隐式传递  
+```jsx
+<button onClick = {this.onClickHandler.bind(this, id) }></button>
+```
+## 条件渲染
+使用另一个函数组件通过使用if判断prop来进行渲染
+* 使用 与运算符 &&  
+在 JavaScript 中，true && expression 总是会返回 expression, 而 false && expression 总是会返回 false。
+* 使用 三目运算符
+
+### 阻止组件渲染
+直接在函数组件内条件返回 null 或者class组件内的render()返回null则可阻止渲染，但是不影响组件的生命周期，只是渲染内容为空而已
+
+## 列表渲染
+列表渲染需要使用到Array.map()方法，可操作数组内部的每一个迭代的元素，并在最后返回一个新数组
+```jsx
+const numbers = [1, 2, 3, 4, 5];
+const doubled = numbers.map((number) => number * 2); //-> 1 4 9 16 25
+```
+React的渲染列表的规则则是在map中返回一个带有数据的模板数组，并且每个迭代的项目必须分配一个唯一的key属性  
+而且key属性是只写属性，不可读，只会传递给React，不会传递给组件，不能通过项目上的props进行访问，如果要标识每个迭代项，则需要另外使用属性进行代替，  
+如果你选择不指定显式的 key 值，那么 React 将默认使用索引用作为列表项目的 key 值。 
+
+> 最将key设置为给的迭代的数据中的id，而不是map迭代的index，因为这样可能因为列表的顺序变化而使性能变差  
+
+```jsx
+const numbers = [1, 2, 3, 4, 5];
+const doubled = numbers.map((number, index) => <li key={index} index={index}>{number*2}</li>); //-> 1 4 9 16 25
+ReactDOM.render(
+  <ul>{doubled}</ul>, 
+   document.getElementById('root'))
+
+// 或者这样，但是最好进行组件的提取
+const numbers = [1, 2, 3, 4, 5];
+ReactDOM.render(
+  <ul>
+  {
+    numbers.map((number, index) => 
+      <li key={index} index={index}>
+        {number*2}
+      </li>)
+   }
+  </ul>, 
+   document.getElementById('root'))
+
+```
+
+元素的 key 只有放在就近的数组上下文中才有意义，换句话说，必须在数据的map方法中对迭代项目进行key属性的添加。
+
+###  key 只是在兄弟节点之间必须唯一
+不同的map方法中的key可以相同，不需要要全局唯一
+
+# 表单
+React中的表单一般意味着表单的组件时有状态(state)组件，表单默认拥有默认行为——跳转页面，大多数情况下，使用监听组件标签的值，将其值使用函数设置在state中，这种表单组件称之为 受控组件 —— 表单的值被JS事件函数所控制，而不是被元素本身所控制，state为表单唯一数据源
+
+## input 和 textarea 
+把setState作为唯一的数据源
+```jsx
+InputHandler = (event) =>{
+    this.setState({
+        inputVal:event.target.value,
+
+    })
+}
+
+<input value={this.state.inputVal} onInput={this.InputHandler}/>
+```
+
+## select 以及 option
+React不会在option标签上使用selected来选择项，而是在跟select标签上使用value来设置默认值，在使用onChange事件监听选中的option的value来设置state
+```jsx
+SelectHandler = (event) =>{
+  this.setState({
+      selectFruit:event.target.value,
+  })
+}
+
+<select value={this.state.selectFruit} onChange={this.SelectHandler}>
+    <option disabled value="">--请选择--</option>
+    <option value="apple">苹果</option>
+    <option value="banana">香蕉</option>
+    <option value="pear">梨</option>
+    <option value="orange">橘子</option>
+</select>
+```
+
+## 文件input标签
+```jsx
+<input type="file" />
+```
+## 处理多个输入
+给每个input标签添加name属性来对获取的vale进行处理
+```jsx
+const value = target.value;
+const name = target.name;
+this.setState({
+  //这里使用ES6动态属性名称进行更新
+  [name]: value
+})
+//等同 ES5:
+var updateObj = {};
+updateObj[name] = value;
+this.setState(updateObj);
+
+```
+
+将input标签的value设置为null 或者undefined ，组件输入则不受控制
+
+# 状态提升
+
+如果以个父组件内部的一个子组件的状态需要共享给另一个子组件，则可以将它们共同需要的状态提升到父组件的状态中，然后再从父组件中传递到子组件内，父组件作为数据的唯一源，掌握状态控制权，且子组件没有直接控制权，或者说子组件只能通过父组件向子组件传递的props中得到父组件的接口函数，进而调用父组件的某个状态（最好在子组件的自定义函数中调用props中传入的父组件回调）
+
+# 组合与继承
+
+每个子组件中的props.children接收来自父组件插入到子组件标签的内容，在子组件内部使用{props.children}进行放置插入的内容，类似于Vue的插槽slot功能，或者可以在标签的prop中传递一个组件标签，然后再通过props访问
+
+```jsx
+//父组件中
+<ComponentA 
+    <h1>内容</h1>
+</ComponentA>
+//子组件ComponentA中
+<div>
+	{props.children}
+</div>
+```
+
+
+
+在React构建的应用中，几乎没有用到继承这一属性的组件，每个组件都可能被高度自定义；
+
+如果要复用非UI的功能而使用继承，建议将其提取为一个单独的 JavaScript 模块，如函数、对象或者类。组件可以直接引入（import）而无需通过 extend 继承它们。
+
+Props 和组合为你提供了清晰而安全地定制组件外观和行为的灵活方式。注意：组件可以接受任意 props，包括基本数据类型，React 元素以及函数。
+
+# React 构建艺术
+
+React最大的优点就是让我们思考如何科学的、规范的构建一个应用
+
+1. 我们先要得到设计师的数据稿件，或者服务器后台工作者提供的JSON数据，依此作为组件和状态的规划
+2. 将设计好的UI划分为组件层级，PS图层中的图层名可以被参考为组件名，从而保持美工与程序的一致性
+   * 使用单一功能的原则来判断组件包括的范围，一个组件只负责一个功能，而不对其他组件产生依赖
+   * 对展示组件内不同类型的数据样式做出决定  
+3. 使用React创建一个规划好的静态页面，不需要使用state和prop
+4. 确定UI 组件 的state最小的表示(初始化组件需要的最小状态)，以及state放置的位置
+   * 遵循**一次且仅一次**的原则
+   * 检查JSON判断数据是否属于当前组件的state
+     * 该数据是否是从父级通过props传递过来？如果是，则不属于state
+     * 该数据是否随着时间的推移产生变化？如果是，则属于state
+     * 该数据是否可以通过props和state中的值计算得出？如果不是，则属于state
+5. 添加反向数据流，向下层传递函数，向上层传递state数据以调用setState
+
+
+
+# React高级
+
+## React.lazy函数
+
+使用React.lazy()函数动态引入一个外部组件
+
+React.lazy()接收一个函数，这个函数要动态调用import()，而非这个函数返回的是Promise对象，该 Promise 需要 resolve 一个 `defalut` export 的 React 组件。
+
+```jsx
+const OtherComponent = React.lazy(() => import('./OtherComponent'));
+```
+
+## Context 与 跨层传递数据
+
+context的目的是共享作用整个组件树的全局数据，能让你将这些数据向组件树下所有的组件进行“广播”，所有的组件都能访问到这些数据，也能访问到后续的数据更新。
+
+在一般情况下，从父组件传递到孙组件需要通过中间组件来逐层传递，使用context我们可以避免传递经过中间组件多次prop
+
+* Context 对象
+
+  创建一个 Context 对象。当 React 渲染一个订阅了这个 Context 对象的组件，这个组件会从在组件树中离自身最近的那个匹配的 `Provider` 中读取到当前的 context 值。
+
+```jsx
+const MyContext = React.createContext(defaultValue);
+```
+
+> **只有**当组件所处的树中没有匹配到 Provider 时，其 `defaultValue` 参数才会生效
+
+* MyContext.Provider
+
+  使用根级别的Context广播提供者，对下层提供值为value的广播，下层组件需要使用contextType来指定Contex广播对象
+
+```jsx
+<MyContext.Provider value={/* 某个值 */}> 放置被广播的组件 <MyContext.Provider/>
+```
+
+>  每个 Context 对象都会返回一个 Provider React 组件，它允许消费组件订阅 context 的变化。
+>
+> Provider 接收一个 `value` 属性，传递给消费组件。多个 Provider 也可以嵌套使用，里层的会覆盖外层的数据
+>
+> 当 Provider 的 `value` 值发生变化时，它内部的所有消费组件都会重新渲染。Provider 及其内部 consumer 组件都不受制于 `shouldComponentUpdate` 函数，因此当 consumer 组件在其祖先组件退出更新的情况下也能更新。
+
+* Class.contextType
+
+  在类组件中，订阅一个Context 对象
+
+  ```jsx
+  class MyClass extends React.Component{
+  	let value = this.context;
+  }
+  MyClass.contextType = MyContext;
+  ```
+
+> 将挂载在 class 上的 `contextType` 属性重新赋值一个Context对象，然后就可以使用this.context来访问最近的Context上的value值，而且可以在所有生命周期钩子和render()中访问它
+
+* Context.Consumer
+
+  在Context.Provider之下，返回使用value进行处理的react元素
+
+  ```jsx	
+  <MyContext.Consumer>
+    {value => /* 返回基于 context 值进行渲染的React元素*/}
+  </MyContext.Consumer>
+  // context默认值为一个对象，携带函数
+  <ThemeContext.Consumer>
+      {({theme, toggleTheme}) => (
+          <button 
+              onClick={toggleTheme}
+              style={{backgroundColor: theme.background}}>
+              Toggle Theme
+          </button>
+      )}
+  </ThemeContext.Consumer>
+  ```
+
+> 这个函数接收当前的 context 值，返回一个 React 节点。传递给函数的 `value` 值等同于往上组件树离这个 context 最近的 Provider 提供的 `value` 值。如果没有对应的 Provider，`value` 参数等同于传递给 `createContext()` 的 `defaultValue`。
+
+
+
+
+
+使用方法：
+
+```jsx
+//创建一个React的context对象，参数为默认值
+const Context = React.createContext(defaultData);
+//在App根组件内使用<ThemeContext.Provider /> 标签包裹顶级作用组件，意思就是这个全局数据使用范围的上限
+class App extends React.Component {
+  render() {
+    // 使用一个 Context.Provider 将当前的要传递的值 value 给以下的组件树。
+    // 无论多深，任何组件都能读取这个值。
+    // 在这个例子中，我们将 “dark” 作为当前的值传递下去。
+    // 若将undefined 传入 value中，则不会使用defaultData作为默认值
+    return (
+      <Context.Provider value="dark">
+        <Toolbar />
+      </Context.Provider>
+    );
+  }
+}
+//在下级组件中，访问Context来使用这个全局数据
+static contextType = Context;
+let value = this.context
+
+```
+
+注意在使用Context之前需要思考使用是否合理，否则会造成数据域的混乱
+
+### 不使用Context进行跨层传递数据
+
+在根组件处，将最终需要的下级组件本身通过放入一个变量的形式通过prop传递下去，
+
+这种变化下，只有最顶部的 Page 组件需要知道 `Link` 和 `Avatar` 组件是如何使用 `user` 和 `avatarSize` 的。
+
+```jsx
+//Page根组件中，声明一个变量装入下级组件
+const userLink = (
+    <Link>
+      <Avatar user={user} size={props.avatarSize} />
+    </Link>
+  );
+//通过prop传递定义好的组件
+return <PageLayout userLink={userLink} />;
+```
+
+### 通过向prop传递组件来渲染
+
+这种方式可以有效的解除下级组件与上级组件的耦合
+
+```jsx
+function Page(props) {
+  const user = props.user;
+  //将子组件进行封装成react元素，这些元素可以使用当前组件的props和state
+  const content = <Feed user={user} />;
+  const topBar = (
+    <NavigationBar>
+      <Link href={user.permalink}>
+        <Avatar user={user} size={props.avatarSize} />
+      </Link>
+    </NavigationBar>
+  );
+  return (
+    // 通过props传递组件
+    <PageLayout
+      topBar={topBar}
+      content={content}
+    />
+  );
+}
+//使用
+function PageLayout(props){
+    return(
+    	{props.topBar}
+        {props.content}
+    )
+}
+```
+
+## refs 和 DOM
+
+Refs 提供了一种方式，允许我们访问 DOM 节点或在 render 方法中创建的 React 元素。
+
+由于不能直接得到原生DOM的对象 ，给标签加上 ref prop 并声明一个值可以使用""和{}，前者声明值，后者使用函数，在组件域中使用this.refs进行访问该DOM对象
+
+### 旧版本使用ref：
+
+```jsx
+...
+const input = this.refs.input
+
+render(){
+	return (
+    	<input ref="input" />
+	    <input ref={js表达式/函数} />
+    )
+}
+
+```
+
+### 何时使用 Refs
+
+- 管理焦点，文本选择或媒体播放。
+- 触发强制动画。
+- 集成第三方 DOM 库
+
+避免使用 refs 来做任何可以通过声明式实现来完成的事情。
+
+### 新版本使用refs：
+
+Refs 是使用 `React.createRef()` 创建的，并通过 `ref` 属性附加到 React 元素。
+
+创建refs
+
+```jsx
+constructor(prop){
+	super(prop);
+    this.inputRef = React.createRef();
+}
+render(){
+    return(
+    	<input ref={this.inputRef} />
+    )
+}
+```
+
+访问refs
+
+* 当 `ref` 属性用于 HTML 元素时，React.createRef()返回的对象中的current接收底层对应DOM元素的对象
+
+* 当 `ref` 属性用于自定义 class 组件时，ref.current作为React组件实例对象
+* 不能在函数组件的props中上使用ref，但是可以在函数组件内部使用ref
+
+```jsx
+constructor(prop){
+	super(prop);
+    this.inputRef = React.createRef();
+}
+render(){
+    console.log(this.inputRef.current); //<input />
+    return(
+    	<input ref={this.inputRef} />
+    )
+}
+```
+
+React 会在组件挂载时给 `current` 属性传入 DOM 元素，并在组件卸载时传入 `null` 值。`ref` 会在 `componentDidMount` 或 `componentDidUpdate` 生命周期钩子触发前更新。
+
+回调Refs
+
+不使用`React.createRefs()`创建，将元素上的`ref`设置成一个回调函数，回调函数的内容是 `以React实例或者DOM元素`作为参数赋值给`constructor`中的变量，访问时，直接访问这个变量即可访问到对应DOM
+
+```jsx
+constructor(prop){
+	super(prop);
+    this.inputRef = null;
+    this.setInputRef = elem =>{
+        this.inputRef = elem
+    }
+}
+render(){
+    console.log(this.inputRef);  // <input  />
+    return(
+    	<input ref={this.setInputRef} />
+    )
+}
+```
+
+或者
+
+```jsx
+<input ref={elem =>this.inputRef = elem} />
+```
+
+## render prop
+
+术语 `render prop`是指一种在 React 组件之间使用一个值为函数的 prop 共享代码的简单技术
+
+具有 render prop 的组件接受一个回调函数，该函数返回一个 React 元素并调用它而不是实现自己的渲染逻辑，换句话说，具有render prop的React组件只渲染render内部回调函数的内容
+
+使用场景
+
+* 当某一封装的组件的功能要被其他几个组件复用且不改变封装的时候
+
+使用方法
+
+* 在作为复用的组件封装中，将render内部使用`{this.props.render(this.state)}`将封装组件中的数据传递给组件本身render prop中回调函数的参数中，使用回调函数内容渲染另一个组件
+
+  ```jsx
+  class Cat extends React.Component {
+    render() {
+      const mouse = this.props.mouse;
+      return (
+        <img src="/cat.jpg" style={{ position: 'absolute', left: mouse.x, top: mouse.y }} />
+      );
+    }
+  }
+  
+  class Mouse extends React.Component {
+    constructor(props) {
+      super(props);
+      this.handleMouseMove = this.handleMouseMove.bind(this);
+      this.state = { x: 0, y: 0 };
+    }
+  
+    handleMouseMove(event) {
+      this.setState({
+        x: event.clientX,
+        y: event.clientY
+      });
+    }
+  
+    render() {
+      return (
+        <div style={{ height: '100vh' }} onMouseMove={this.handleMouseMove}>
+          {/*
+            使用render方法进行动态传递数据，传递给回调函数的参数
+          */}
+          {this.props.render(this.state)}
+        </div>
+      );
+    }
+  }
+  
+  class MouseTracker extends React.Component {
+    render() {
+      return (
+        <div>
+          <h1>移动鼠标!</h1>  
+          <Mouse render={mouse => ( // mouse就是封装组件传递过来的state，而这个mouse组件不会渲染自己的render，而是渲染Cat
+            <Cat mouse={mouse} />
+          )}/>
+        </div>
+      );
+    }
+  }
+  ```
+
+### 不一定要使用render这个prop 名字
+
+render prop 是因为模式才被称为 *render* prop ，你不一定要用名为 `render` 的 prop 来使用这种模式。
+
+*任何*被用于告知组件需要渲染什么内容的函数 prop 在技术上都可以被称为 “render prop”，即返回内容为react元素的函数，这种函数不一定要反正元素的attributes 中 ，还可以直接放在复用元素的内部
+
+## 高阶组件设计模式
+
+高阶组件（HOC）是 React 中用于复用组件逻辑的一种高级技巧。HOC 自身不是 React API 的一部分，它是一种基于 React 的组合特性而形成的设计模式。
+
+**高阶组件是参数为组件，返回值为新组件的函数。**
+
+```jsx
+const EnhancedComponent = higherOrderComponent(WrappedComponent);
+```
+
+组件是将 props 转换为 UI，而高阶组件是将组件转换为另一个组件。
+
+当几个组件的更新数据模式都具有同样的行为时，使用 高阶组件 解决横切关注点问题
+
+高阶函数组件接收2个参数，被包装的组件WrappedComponent，被包装的组件所需要的数据/处理方式selectData
+
+```jsx
+// 此函数接收一个组件... ，参数数量不限制
+function withSubscription(WrappedComponent, selectData,...) {
+  // 返回一个新组件
+  return class extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+          //切面组件拿到数据
+        data: selectData(DataSource, props)
+      };
+    }
+	//操作切面的事件，也是就是生成的组件的公共代码部分
+    componentDidMount() {
+      // ...负责订阅相关的操作...
+      DataSource.addChangeListener(this.handleChange);
+    }
+
+    componentWillUnmount() {
+      DataSource.removeChangeListener(this.handleChange);
+    }
+	//回调函数，监听数据变化，不同组件的数据源相同，但是可能传入的selectData进行更新data的操作不同
+    handleChange = () => {
+      this.setState({
+        data: selectData(DataSource, this.props)
+      });
+    }
+
+    render() {
+      // ... 并使用新数据渲染被包装的组件!
+      // 请注意，我们可能还会传递其他属性
+      //将公共方法处理的数据交给这个组件的data prop中，并传递其他prop
+      return <WrappedComponent data={this.state.data} {...this.props} />;
+    }
+  };
+}
+```
+
+高阶组件的最大用处在于，在几个组件需要请求公共数据的时候，把出现相同部分的操作以及对数据处理的不同的行为进行包装，只需要告知，不同操作的函数，类似工厂一样，生成一个新的组件
+
+HOC 通过将组件*包装*在容器组件中来*组成*新组件。HOC 是纯函数，没有副作用。
+
+被包装组件接收来自容器组件的所有 prop，同时也接收一个新的用于 render 的 `data` prop。HOC 不需要关心数据的使用方式或原因，而被包装组件也不需要关心数据是怎么来的。
+
+### 不要试图在 高阶组件模式 中修改组件原型（或以其他方式改变它）
+
+HOC 不应该修改传入组件，而应该使用组合的方式，通过将组件包装在容器组件中实现功能：
+
+## 深入JSX 
+
+prop的展开：
+
+使用`...`形式展开的prop，可以由父级自定义通过props传入到组件内部标签的attributes中，且不受控制，不安全
+
+```jsx
+const Button = props => {
+  const { kind, ...other } = props;  const className = kind === "primary" ? "PrimaryButton" : "SecondaryButton";
+  return <button className={className} {...other} />;
+};
+
+const App = () => {
+  return (
+    <div>
+      <Button kind="primary" onClick={() => console.log("clicked!")}>
+        Hello World!
+      </Button>
+    </div>
+  );
+};
+```
+
+
+
+## React生命周期(同步)
+
+![img](https://upload-images.jianshu.io/upload_images/16775500-8d325f8093591c76.jpg?imageMogr2/auto-orient/strip|imageView2/2/w/740/format/webp)
+
+### 从挂载到卸载
+
+* constructor()
+
+  constructor(props)中完成了对`props`和`state`的初始化，props的初始化是使用`prop-type`进行的，而`state`是在构造器内部初始化
+
+  必须在`constructor`中调用`super(props)`，否则会导致内部this指向错误
+
+* componentWillMount()
+
+  在组件进行挂载之前调用的钩子，一般在服务器中使用
+
+* componentDidMount()
+
+  在组件第一次渲染之后调用，此时DOM节点以及生成，通常在此处发送ajax请求，然后使用setState()进行更新数据
+
+* componentWillUnmount
+
+  在组件销毁之前调用，用于清除定时器，以及事件监听
+
+### 更新循环
+
+* props被修改
+
+  * componentWillReceiveProps(nextProps)
+
+    在`props`发生修改时后调用，此时新的`props`为参数`nextProps`，而旧的`props`为`this.props`，一般`props`改变会触发`state`的改变。
+
+* state被修改
+
+  * shouldComponentUpdate(nextProps,nextState)
+
+    得到最新的props和最新的state后，调用此钩子，此函数返回一个布尔值，`true`则进行重绘流程，`false`则不触发重绘，回到`running`状态
+
+* componentWillUpdate(nextProps,nextState)
+
+  进入更新流程，此时`props`，`state`已经迭代，在重新渲染之前调用，任然可以获得新的`nextProps`与`nextState`进行操作
+
+* render()  使用新状态与Diff算法对组件部分进行重绘
+
+* componentDidUpdate(prevProps,prevState)
+
+  重绘之后调用的钩子，可访问到 旧的`prevProps`和`prevstate` 
+
+
+
+## React Hook
+
+在没有Hook`之前，函数组件与class(类)组件的区别：
+
+* 类组件有`this` ，而函数组件没有`this`
+* 类组件拥有`state` ，而函数组件没有 state
+* 类组件有完整的生命周期，在创建时需要将其实例化，而函数组件没有声明周期，在执行完毕后返回结果，不用创建实例一个，所以函数组件的性能比类组件的性能好一些，应尽量使用函数组件
+* 在类组件每一次重新渲染时，会执行一遍 `render()` 内的代码，在函数式组件每一次重新渲染时，会重新执行一遍函数组件内的所有代码
+
+Hook 可以让你在不编写 class 的情况下使用 state 以及其他的 React 特性
+
+Hook在最新的 React中完全为可选，而且向后兼容
+
+```jsx
+import React, { useState } from 'react';
+function Example() {
+  // 声明一个新的叫做 “count” 的 state 变量,setCount类似于setState
+  const [count, setCount] = useState(0);
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
+}
+```
+
+### 什么是Hook ？
+
+Hook是一些可以让你在函数组件中 钩入 React state和生命周期等类组件特性的函数，且Hook不能在类组件中使用,Hook 使用了 JavaScript 的闭包机制
+
+### State Hook
+
+引入`{useState}`后，可以在函数组件中使用`const`声明一组`state`变量 `count` 和 `setCount ` 
+
+`useState()`会返回一个数组，使用这个2个变量进行数组解构赋值，`useState()`内部的参数为这个`state`变量的*初始值*
+
+React 会在重复渲染时保留这个 `state` ,但是它不会把新的 `state` 和旧的 `state` 进行合并。
+
+```jsx
+// 函数组件中
+function Example(){
+    const [count,setCount] = useState(0); //useState的内部参数为count的初始值
+    //...
+}
+```
+
+由此可见，在一个组件中多次使用`State Hook`可以声明多个`state`变量
+
+```jsx
+// 函数组件中
+function Example(){
+    const [name,setName] = useState('React'); 
+    const [age,setAge] = userState(5);
+    //...
+}
+```
+
+### Effect Hook
+
+在React组件一般在生命周期钩子中执行：
+
+* 数据获取(发送ajax请求)
+* 订阅消息(使用第三方库进行状态更新)
+* 手动修改DOM对象(使用refs修改获得的DOM)
+
+这些操作被统一成为副作用操作
+
+useEffect 就是一个 Effect Hook ，为函数组件增加了 **进行副作用操作** 的能力，它跟 class 组件中的 `componentDidMount`、`componentDidUpdate` 和 `componentWillUnmount` 3个生命周期钩子具有相同的用途，但是被合成到了一个useEffect()中，参数为一个函数，React 保证了每次运行 effect 的同时，DOM 都已经更新完毕。
+
+`useEffect(()=>{..})`的回调函数可访问组件的 props state，在函数组件挂载之后，props state更新之后，函数组件卸载之前，都会调用useEffect()，执行传入的函数
+
+#### 无需清除的Effect
+
+我们只想**在 React 更新 DOM 之后运行一些额外的代码。**比如发送网络请求，手动变更 DOM，记录日志，这些都是常见的无需清除的操作。在class组件中，我们需要在挂载后和更新后的钩子中写相同的代码，而Hook只书写一次
+
+`useEffect` 调度的 effect 不会阻塞浏览器更新屏幕
+
+#### 需要清除的 Effect
+
+在`Effect`中订阅数据只需要一次，这可以防止内存泄露，在class组件中，我们能使用3个生命周期钩子很好的进行订阅、更新和取消订阅
+
+在`Effect`中，在回调函数中进行返回一个**清除函数**，对应class组件中的`componentWillUnmount()` 
+
+**React 会等待浏览器完成画面渲染之后才会延迟调用 `useEffect`**
+
+**React 会在组件卸载的时候执行清除函数**
+
+函数组件每次更新时，都会先卸载，然后再挂载，意味着每次更新都会调用一次setEffect中的内容然后进行state变量更新，从而循环监听，如果不将上次的订阅取消，那么每次的监听都会被保留在内存中，造成内存泄露，所以必须在每次卸载之前，将上一次的订阅取消
+
+```jsx
+import React, { useState, useEffect } from 'react';
+
+function FriendStatus(props) {
+  const [isOnline, setIsOnline] = useState(null);
+  useEffect(() => {
+    function handleStatusChange(status) {
+      //这个函数一直在被调用，如果没有变动则没次set的值都相同
+      setIsOnline(status.isOnline);
+    }
+    //这个订阅会在每次更新时都进行一次订阅，相当于监听
+    ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
+    // 清除上一次的订阅
+    return function cleanup() {
+      ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
+    };
+  });
+
+  if (isOnline === null) {
+    return 'Loading...';
+  }
+  return isOnline ? 'Online' : 'Offline';
+}
+```
+
+**Hook 允许我们按照代码的用途分离他们，** 而不是像生命周期函数那样。React 将按照 effect 声明的顺序依次调用组件中的*每一个* effect
+
+```jsx
+function FriendStatusWithCounter(props) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {    document.title = `You clicked ${count} times`;
+  });
+
+  const [isOnline, setIsOnline] = useState(null);
+  useEffect(() => {function handleStatusChange(status) {
+      setIsOnline(status.isOnline);
+    }
+
+    ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
+    return () => {
+      ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
+    };
+  });
+  // ...
+}
+```
+
+#### 那么为什么要使用函数组件在每次更新后运行useEffect的回调呢？
+
+如果在class组件中，在组件被挂载之后的`componentDidMount()`中进行**数据订阅**操作，这个时候组件本身的一个prop作为一个订阅的参数，进行订阅。
+
+* 在不使用 `componentDidUpdate()`的情况下，当这个作为参数的prop被更新时，此时数据订阅的参数没有被更新，导致还是以原来的参数在进行订阅，
+* 在使用`componentDidUpdate()`情况下，还要在最开始取消上一次的更新，后再次进行一次相同代码的订阅，导致代码重复2次
+
+```jsx
+componentDidMount() {
+    ChatAPI.subscribeToFriendStatus(
+    this.props.friend.id,   //当组件props更新时，这个参数没有被更新
+    this.handleStatusChange
+    );
+}
+ componentDidUpdate(prevProps) {
+    // 取消订阅之前的 friend.id
+    ChatAPI.unsubscribeFromFriendStatus(
+      prevProps.friend.id,
+      this.handleStatusChange
+    );
+    //当组件props更新时，只能通过componentDidUpdate()来重复调用订阅，这样造成了代码重复
+    ChatAPI.subscribeToFriendStatus(
+    this.props.friend.id,   
+    this.handleStatusChange
+    );
+  }
+
+componentWillUnmount() {
+    ChatAPI.unsubscribeFromFriendStatus(
+    this.props.friend.id,
+    this.handleStatusChange
+    );
+}
+```
+
+而使用Effect Hook，不同，在挂载的时候，就会调用一次订阅，并且随着数据的更新，他会不断的通过卸载时清除effect和挂载时重新调用订阅，保证数据以规定的节奏处于最新状态，但是这会造成一个性能问题：**即使数据没有改变，也会不断的进行监听以及进行挂载和卸载**
+
+```jsx
+function FriendStatus(props) {
+// ...
+    useEffect(() => {
+        // ...
+        ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
+        return () => {
+            ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
+    	};
+});
+```
+
+### 对Effect 进行性能优化，解决Effect性能问题
+
+在class组件中，`componentDidUpdate()`可以使用`prevProps`和`prevState`与新的状态进行比较，来决定是否要进行**取消之前的订阅**和**调用新的订阅**
+
+在使用Effect Hook中，只要在`useState()`中传递一个数组作为第二个参数（数组中的元素则为进行差异对比的state变量），则可以在两次渲染都没有差别的时候，跳过对effect的回调函数的调用，目前第二个参数**必须**要手动添加
+
+* 以传入[count]为例：
+
+  如果`count`当前的值是`5`，当`count`接收到一个新值的时候，这个函数组件会启动重新渲染(卸载后挂载)，此时的渲染的`count`会与上一次渲染的`count`进行对比，如果这个2个数组 (前面提到的传入的数组) 中的所有元素都相同，即`[5 === 5]`，则React会跳过执行useEffect()的回调函数，实现了性能优化
+
+* 值得注意的是：
+  
+  * 使用Effect的优化，必须确保数组中包含了所有外部作用域中的变量，这些变量必须是在`useEffect()`回调中直接、间接影响内部的state变量的变量，否则你的代码会引用到先前渲染中的旧state变量
+* 如果指向执行一次effect，可以向第二个参数传递一个空数组`[]`，告诉React不依赖于任何props和state，永远不需要重复执行
+
+```jsx
+function FriendStatusWithCounter(props) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {    document.title = `You clicked ${count} times`;
+  },[count]);
+
+  const [isOnline, setIsOnline] = useState(null);
+  useEffect(() => {function handleStatusChange(status) {
+      setIsOnline(status.isOnline);
+    }
+	//这个订阅会在每次更新时都进行一次订阅，相当于监听
+    ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
+    return () => {
+        // 清除上一次的订阅
+      ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
+    };
+  },[props.friend.id]);//对比新旧props.friend.id，在props.friend.id没有发生改变的时候，跳过执行回调函数
+  // ...
+}
+```
+
+#### Hook 使用规则
+
+
+
+
+
+
+
+
+
+#### Effect Hook总结
+
+effect hook 引入 函数组件 ，使得函数组件拥有了类似于class的生命周期钩子，只不过是将挂载后，更新后，卸载前的钩子进行了一个集中处理，简单的来说，effect hook 处理了这么一个流程：
+
+* `useEffect()`的回调函数在被渲染好后，挂载时，触发了一次回调函数
+* 当遇到状态更新时，在使用新、旧两个数据渲染后进行差异对比，决定是否跳过`useEffect()`的回调函数，从而决定是否重新渲染
+* 在进行重新渲染时，在当前组件卸载之前，对回调内的监听、订阅等影响后续数据的操作进行清除
+
