@@ -36,13 +36,13 @@
         ```javascript
         var data = {
             ...
-        }
+        };
         var vm = new Vue({
-            ...
+            //...
             data:data
-        })
-        var vm.$data 
-        console.log(vm.$data == data ) // true
+        });
+        vm.$data; 
+        console.log(vm.$data === data ) // true
         ```
 
 * 引入Vue.js并创建Vue 配置对象 app ,设置其参数，data中的所有数据均为app中的属性 app.prop ， 其中数据在指定的元素中使用{{prop}}进行访问 ，{{}}中为js语法
@@ -633,10 +633,10 @@
     ```
 * 如果要使这种方式能在子组件中使用则在子组件对象内加入子组件
     ```javascript
-    var component1 = {...}
-    var component2 = {{
+    var component1 = {//...}
+    var component2 = {
         components : {
-            'component-1' :  component1
+            'component-1':  component1
         }
     }
     var component3 = {...}
@@ -646,7 +646,7 @@
 * 在定义组件时，prop对象内的attribute 在使用 驼峰式命名时，在父组件中使用该属性应当使用全小写并用 '-' 分隔开
     ```javascript
     ...
-    props: ['todoItems'],
+    props: ['todoItems'];
     ...
     ```
     ```html
@@ -661,7 +661,7 @@
         * 带有默认对象的prop 同样使用返回对象的函数
     * 设定一个验证规则函数
     ```javascript
-    ...
+    //...
     props: {
         todoItems : [Array, Object...] ,
         propA : {
@@ -1427,11 +1427,11 @@
                 console.log('hello')
             }
         }
-    }
+    };
     // 定义ComponentDemo为混入组件
     var ComponentDemo = Vue.extend({
-        mixins = [mixObj]
-    })
+        mixins:[mixObj]
+    });
     //将ComponentDemo实例化
     var componentA = new ComponentDemo () 
     ```
