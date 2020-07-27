@@ -793,6 +793,7 @@
             `
         })
         ```
+    
 * 绑定原生事件到组件
     * 在通常情况下，父组件 在子组件根元素中 监听子组件触发的原生事件而发散的($emit())的自定义事件 ，调用父组件方法
     * 父组件 无法直接监听 子组件的js原生事件，可以通过事件修饰符 .native 来解决
@@ -800,18 +801,22 @@
         <!-- 当点击到该组件区域时，添加修饰符.native 才会触发onClick-->
         <component v-on:click.native="onClick"></component>
         ```
+    
 * 简化实现 父组件 与 子组件的多个双向绑定 .sync
-    * 一般情况下，在子组件内对prop进行与父组件prop进行同步 发散自定义事件父组件监听来更新
-    * 使用了带.sync修饰符的v-bind仍然可以做到这一点
+    
+    * 在默认情况下，父组件通过v-bind:props传递数据给子组件的时候，子组件无法更改这个prop
+    * 在使用`v-on:prop:update`监听的情况下，才会运行修改props，子组件内对prop的修改会在父组件中进行更新 ，子组件使用`$emit()`触发自定义事件父组件的`v-on:prop:update`
+    * 使用了带.sync修饰符的v-bind可以简化这一实现过程
+    
     ```vue
     <!-- 传统自定义事件双向绑定 -->
     <text-document
-    v-bind:title="doc.title"
+v-bind:title="doc.title"
     v-on:update:title="doc.title = $event">
-    </text-document>
-
+</text-document>
+    
     <!-- 上下两者的功能是等效的 -->
-
+    
     <!-- title.sync作为监听器 监听title的改变，并同步到父组件域的item.title中 -->
     <component v-bind:title.sync="item.title"></component>
     <!--  将item内所有的prop都添加各自的监听，相当于双向绑定所有prop ，""中只能是字面量，不能使用{ ... }直接传递一个对象-->
@@ -1902,7 +1907,7 @@ Vuex的核心包含三部分：
    * 使用`this.$store.state`直接访问托管的状态
    
    * 组件的计算属性需要访问`store`的`getter`对象中所对应的方法，来通知vuex进行返回状态，从而获取数据
-    
+   
      * 注意直接不能直接对`getter`对象中的方法进行调用，而是返回调用的函数，通知vue会通知vuex调用该方法
      
      ```vue
@@ -1920,7 +1925,7 @@ Vuex的核心包含三部分：
          }
     }
      ```
-    
+   
      
      
    * 在组件的事件触发的回调函数中，使用`this.$store.dispatch('ActionName')`来触发对应的`Action`
@@ -1947,9 +1952,11 @@ Vuex的核心包含三部分：
        handelPlus ({commit,state}) { //得到传入的函数对象commit，也可以得到state
       commit('INCREMENT'); //提交至mutate对象相应方法	
        },
+     ```
+
     }
      ```
-   
+
    * 通过调用`commit("MutationName")`来更新状态，`MutationName`均为`mutate`对象的方法，在这些方法内可对对应状态进行直接操作
    
      ```vue
@@ -1981,15 +1988,15 @@ Vuex的核心包含三部分：
   // 或者这样也行
   computed: {
       ...mapState({
-          'count':'count',
+          count:'count',
       }),
       ...mapGetters({
-          'evenOrOdd':'evenOrOdd'
+          evenOrOdd:'evenOrOdd'
       }),
   }
   // 不使用...，但只能使用其中一个map
   computed:mapGetters({
-  	'evenOrOdd':'evenOrOdd'
+  	evenOrOdd:'evenOrOdd'
   }),
   ```
 
@@ -2007,10 +2014,10 @@ Vuex的核心包含三部分：
   methods: mapActions(['handelDec','handelPlus','handelPlusIfEven','handelPlusAsync'])
   //或者，左侧为组件中使用的回调函数名，右侧为ActionName
   methods: mapActions({
-      'handelDec':'handelDec',
-      'handelPlus':'handelPlus',
-      'handelPlusIfEven':'handelPlusIfEven',
-      'handelPlusAsync':'handelPlusAsync'
+      handelDec:'handelDec',
+      handelPlus:'handelPlus',
+      handelPlusIfEven:'handelPlusIfEven',
+      handelPlusAsync:'handelPlusAsync'
   })
   ```
 
