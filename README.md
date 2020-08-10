@@ -6,22 +6,22 @@
 
 # 目录
 JS相关
-* [ES6-11](./Note/ES6-11)
-* [JS算法与数据结构](./Note/JS算法与数据结构)
-* [NodeJs入门](./Note/NodeJs)
-* [前端面试题](./Note/前端面试题)
-* [正则表达式](./Note/正则表达式)
-* [jQuery](./Note/jQuery)
-* [JS模块化](./Note/JavaScript%20modularization)
+* [ES6-11](./ES6-11)
+* [JS算法与数据结构](./JS算法与数据结构)
+* [NodeJs入门](./NodeJs)
+* [前端面试题](./前端面试题)
+* [正则表达式](./正则表达式)
+* [jQuery](./jQuery)
+* [JS模块化](./JavaScript%20modularization)
 
 前端框架：
-* [React基础](./Note/React基础)
-* [Vue基础](./Note/Vue)
+* [React基础](./React基础)
+* [Vue基础](./Vue)
 
 H5：
-* [CSS高级](./Note/cssNode)
-* [Canvas](./Note/Canvas)
+* [CSS高级](./cssNode)
+* [Canvas](./Canvas)
 
 部署
-* [Linux下Docker的部署](./Note/Docker部署)
-* [Git使用指南以及机制](./Note/Git)
+* [Linux下Docker的部署](./Docker部署)
+* [Git使用指南以及机制](./Git)
