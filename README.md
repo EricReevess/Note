@@ -1,37 +1,8 @@
-## Welcome to GitHub Pages
+## 欢迎来到我的Github笔记仓库
 
-You can use the [editor on GitHub](https://github.com/MrReeese/Note/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+这里是我探索和学习前端技术的途中记下的笔记，这些笔记包括一些代码演示，其中部分文本来自于一些技术的官方文档，但是大部分内容为在我理解后所手写下来的例如react的Hook
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
-### Markdown
+# 目录
+[ES6-11](../ES6-11)
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/MrReeese/Note/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
