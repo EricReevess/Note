@@ -34,7 +34,7 @@ var moduleObject = require("文件相对路径");
 
 * 全局对象 global ，类似于网页js中的window，要想声明全局变量，去掉let 或者 var 即可
 
-* 在执行模块代码时候，NodeJS会将执行模块中的代码使用一个函数包裹起来
+* 在执行模块代码时候，NodeJS会将执行模块中的代码使用一个**函数包**裹起来
 ```JavaScript
 function (exports, require, module, __filename, __dirname) { //传递5个参数
     //要执行的模块代码.....
@@ -393,3 +393,155 @@ console.log(_event)
 
 NodeJs里面所有`异步的I/O操作`，都会在完成时发送一个事件到`事件队列`
 
+## get / post 请求
+
+获取请求url中 ? 之后的部分，使用nodejs的util模块以及url模块进行解析
+
+* 处理get请求的响应
+
+```js
+let _httpServe = require('http') // 引入http模块
+let _util = require('util')
+let _url = require('url')
+let port = 3302
+// 创建一个http服务
+_httpServe.createServer(function (request, response) {
+  // 定义http头信息，报告http状态码以及内容格式,text/plain 为纯文本类型
+  response.writeHead(200, {
+    'Content-Type': 'text/html;charset=utf-8'
+  })
+  // 向客户端发送数据
+  response.end('<h1>This is a simple Http server</h1>')
+  console.log(_url.parse(request.url)) // 解析请求url为对象
+  console.log(_util.inspect(request.url)) // 解析请求url参数部分为字符串
+})
+  .listen(port) // 监听端口号
+
+console.log('服务器已经创建')
+```
+
+```js
+let _httpServe = require('http') // 引入http模块
+let _util = require('util')
+let _url = require('url')
+
+let port = 3302
+// 创建一个http服务
+_httpServe.createServer(function (request, response) {
+  // 定义http头信息，报告http状态码以及内容格式,text/plain 为纯文本类型
+  response.writeHead(200, {
+    'Content-Type': 'text/html;charset=utf-8'
+  })
+  // 向客户端发送数据
+  // 在响应end之前写入响应信息
+  let _urlParam = _url.parse(request.url,true).query;
+  for (let key in _urlParam){
+    response.write(key + ':' + _urlParam[key] +'<br>')
+  }
+  response.end('<h1>This is a simple Http server</h1>') 
+  // response.end(''+_urlParam.name)
+  // console.log(_url.parse(request.url)) // 解析请求url为对象
+  // console.log(_util.inspect(request.url)) // 解析请求url参数部分为字符串
+})
+  .listen(port) // 监听端口号
+
+console.log('服务器已经创建')
+```
+
+* 处理post请求：使用querystring处理请求url中的参数为对象
+
+  ```js
+  let _httpServe = require('http') // 引入http模块
+  let queryString = require('querystring')
+  let port = 3303
+  let _form =
+    `<form method="post"> 
+      <label for="name">用户名</label> 
+      <input id="name" type="text" name="username" />
+      <br> 
+      <label for="pwd">密码</label>
+      <input id="pwd" type="password" name="password" />
+      <br> 
+      <button type="submit">登陆</button>
+    </form>`
+  
+  // 创建一个http服务
+  _httpServe.createServer(function (request, response) {
+  
+    let _data = ''
+    // 请求获取到数据的的回调
+    request.on('data', function (data) {
+      console.log(data)
+      _data += data
+    })
+  
+    // 请求结束后的回调
+    request.on('end', function () {
+      _data = queryString.parse(_data)
+      response.writeHead(200, {
+        'Content-Type': 'text/html;charset=utf-8'
+      })
+      // 如果有post数据
+      if (_data.username){
+        for (let key in _data){
+          response.write(`${key}:${_data[key]}<br>`)
+        }
+      } else {
+        // 如果没有post数据,写入空表单
+        response.write(_form)
+  
+      }
+      // 结束响应
+      response.end()
+  
+    })
+  
+  })
+    .listen(port) // 监听端口号
+  
+  console.log('服务器已经创建')
+  
+  ```
+
+  
+
+## Express框架
+
+一个简洁的nodejs web应用框架，可以快速搭建一个完整的网站
+
+特性：
+
+* 使用中间件来响应http请求
+* 设置简单的路由
+
+使用express搭建一个http服务：
+
+```js
+const Express = require('express')
+const port = 1235
+
+const app = Express()
+
+app.get('/', function (req, res) {
+  res.send('express 服务')
+})
+
+app.listen(port, function () {
+  console.log('服务器已启动')
+})
+```
+
+使用express搭建一个静态页面的http服务器
+
+```
+const Express = require('express')
+const port = 1234
+
+const app = Express()
+
+app.use( Express.static('../bkmobanBlogs'))
+
+app.listen(port, function () {
+  console.log('静态资源服务器已启动')
+})
+```

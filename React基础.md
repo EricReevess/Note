@@ -38,7 +38,7 @@ id为root的根节点的所有内容均由React DOM管理，仅使用 React 构�
 将 React 集成进一个已有应用，那么可以在应用中包含任意多的独立根 DOM 节点。
 
 * 想要将React 元素 渲染到DOM中，只需要将它们传入到 ReactDOM.render() 中
-```js
+```jsx
 const element = <h1>Hello there</h1>
 ReactDOM.render(element,document.getElementById('root'))
 ```
@@ -65,6 +65,8 @@ setInterval(currentTime, 1000);
 ## React组件和Prop
 组件: 将UI拆分为独立可复用的代码片段，每个片段拥有独立的构思
 组件名称必须以大写字母开头
+
+一种常见的应用模式是尽可能减少状态组件并创建无状态的函数组件。这有助于将状态管理包含到应用程序的特定区域。反过来，通过更容易地跟踪状态变化如何影响其行为，可以改进应用程序的开发和维护。
 
 * 组件的定义方式
 
@@ -836,9 +838,11 @@ const App = () => {
 
 * componentWillMount()
 
-  在组件进行挂载之前调用的钩子，一般在服务器中使用
+  在组件进行挂载之前调用的钩子，一般在服务器中使用，`componentWillMount()`方法在`render()`方法之前被调用
 
 * componentDidMount()
+
+  React 的最佳实践是在生命周期方法`componentDidMount()`中对服务器进行 API 调用或任何其他调用。
 
   在组件第一次渲染之后调用，此时DOM节点以及生成，通常在此处发送ajax请求，然后使用setState()进行更新数据
 
@@ -870,11 +874,848 @@ const App = () => {
 
   重绘之后调用的钩子，可访问到 旧的`prevProps`和`prevstate` 
 
+## 使用 && 获得更简洁的条件
+
+if/else 语句在上一次挑战中是有效的，但是有一种更简洁的方法可以达到同样的结果。假设你正在跟踪组件中的几个条件，并且希望根据这些条件中的每一个来渲染不同的元素。如果你写了很多`else if`语句来返回稍微不同的 UI，你可能会写很多重复代码，这就留下了出错的空间。相反，你可以使用`&&`逻辑运算符以更简洁的方式执行条件逻辑。这是完全可行的，因为你希望检查条件是否为真，如果为真，则返回一些标记。这里有一个例子：
+
+```jsx
+{condition && <p>markup</p>}
+{display && <h1>Displayed!</h1>} 
+```
+
+如果`condition`为 true，则返回标记。如果 condition 为 false，操作将在判断`condition`后立即返回`false`，并且不返回任何内容。你可以将这些语句直接包含在 JSX 中，并通过在每个条件后面写`&&`来将多个条件串在一起。这允许你在`render()`方法中处理更复杂的条件逻辑，而无需重复大量代码。
+
+## 用 renderToString 在服务器上渲染 React
+
+到目前为止，你已经能够在客户端上渲染 React 组件，一般来说我们都是这么做的。然而，在一些用例中，在服务器上渲染一个 React 组件是有意义的。由于 React 是一个 JavaScript 视图库，所以使用 Node 让 JavaScript 运行在服务器上是可行的。事实上，React 提供了一个可用于此目的的`renderToString()`方法。
+
+有两个关键原因可以解释为什么服务器上的渲染可能会在真实世界的应用程序中使用。
+
+* 首先，如果不这样做，你的 React 应用程序将包含一个代码量很少的 HTML 文件和一大堆 JavaScript，当它最初加载到浏览器时。这对于搜索引擎来说可能不太理想，因为它们试图为你的网页内容生成索引，以便人们可以找到你。
+
+* 如果在服务器上渲染初始 HTML 标记并将其发送到客户端，则初始页面加载的内容包含搜索引擎可以抓取的所有页面标记。
+
+* 其次，这创造了更快的初始页面加载体验，因为渲染的 HTML 代码量要比整个应用程序的 JavaScript 代码小。React 仍然能够识别你的应用并在初始加载后进行管理。
+
+* ```jsx
+  class App extends React.Component {
+    constructor(props) {
+      super(props);
+    }
+    render() {
+      return <div/>
+    }
+  };
+  
+  // change code below this line
+  ReactDOMServer.renderToString(<App />)
+  ```
+
+## Redux：创建一个 Redux Store
+
+Redux 是一个状态管理框架，可以与包括 React 在内的许多不同的 Web 技术一起使用。
+
+在 Redux 中，有一个状态对象负责应用程序的整个状态，这意味着如果你有一个包含十个组件且每个组件都有自己的本地状态的 React 项目，那么这个项目的整个状态将通过 Redux`store`被定义为单个状态对象，这是学习 Redux 时要理解的第一个重要原则：Redux store 是应用程序状态的唯一真实来源。
+
+这也意味着，如果你的应用程序想要更新状态，只能通过 Redux store 执行，单向数据流可以更轻松地对应用程序中的状态进行监测管理。
+
+Redux `store`是一个保存和管理应用程序状态的`state`，你可以使用 Redux 对象中的`createStore()`来创建一个 redux`store`，此方法将`reducer`函数作为必需参数，`reducer`函数将在后面的挑战中介绍。该函数已在代码编辑器中为你定义，它只需将`state`作为参数并返回一个`state`即可。
+
+## Redux：从 Redux Store 获取状态
+
+Redux store 对象提供了几种允许你与之交互的方法，你可以使用`getState()`方法检索 Redux store 对象中保存的当前的`state`。
+
+```jsx
+const store = Redux.createStore(
+  (state = 5) => state
+);
+let currentState = store.getState()
+```
+
+## 定义一个 Redux Action
+
+由于 Redux 是一个状态管理框架，因此更新状态是其核心任务之一。在 Redux 中，所有状态更新都由 dispatch action 触发，action 只是一个 JavaScript 对象，其中包含有关已发生的 action 事件的信息。Redux store 接收这些 action 对象，然后更新相应的状态。有时，Redux action 也会携带一些数据。例如，在用户登录后携带用户名，虽然数据是可选的，但 action 必须带有`type`属性，该属性表示此 action 的类型。
+
+我们可以将 Redux action 视为信使，将有关应用程序中发生的事件信息提供给 Redux store，然后 store 根据发生的 action 进行状态的更新。
+
+```jsx
+const action = {
+  type:'LOGIN'
+}
+```
+
+## 定义一个 Action Creator
+
+创建 action 后要将 action 发送到 Redux store，以便它可以更新其状态。在 Redux 中，你可以定义动作创建器来完成此任务，action creator 只是一个返回动作的 JavaScript 函数，换句话说，action creator 创建表示动作事件的对象。
+
+```jsx
+const action = {
+  type: 'LOGIN'
+}
+
+function actionCreator ()  {
+    return action
+}
+```
+
+## 分发 Action Event
+
+`dispatch`方法用于将 action 分派给 Redux store，调用`store.dispatch()`将从 action creator 返回的值发送回 store。
+
+action creator 返回一个具有 type 属性的对象，该属性指定已发生的 action，然后，该方法将 action 对象 dispatch 到 Redux store
+
+```jsx
+const store = Redux.createStore(
+  (state = {login: false}) => state
+);
+
+const loginAction = () => {
+  return {
+    type: 'LOGIN'
+  }
+};
+store.dispatch(loginAction())
+```
+
+## Redux：在 Store 里处理 Action
+
+在一个 action 被创建并 dispatch 之后，Redux store 需要知道如何响应该操作。这就是`reducer`函数存在的意义。
+
+* Redux 中的 Reducers 负责响应 action 然后进行状态的修改。`reducer`将`state`和`action`作为参数，并且它总是返回一个新的`state`。
+* 我们要知道这是 reducer 的**唯一**的作用。它不应有任何其他的作用：比如它不应调用 API 接口，也不应存在任何潜在的副作用。
+* reducer 只是一个接受状态和动作，然后返回新状态的纯函数。
+* Redux 的另一个关键原则是`state`是只读的。换句话说，`reducer`函数必须**始终**返回一个新的`state`，并且永远不会直接修改状态。Redux 不强制改变状态，但是你需要在你的 reducer 函数的代码中强制执行它，
+
+```jsx
+const defaultState = {
+  login: false
+};
+
+const reducer = (state = defaultState, action) => {
+  if (action.type === "LOGIN") {
+    return {
+      login:true
+    }
+  } else {
+    return state
+  }
+  
+};
+
+const store = Redux.createStore(reducer);
+const loginAction = () => {
+  return {
+    type: 'LOGIN'
+  }
+};
+```
+
+## Redux：使用 Switch 语句处理多个 Actions
+
+你可以定义 Redux store 如何处理多种 action 类型。比如你正在 Redux store 中进行用户身份验证，如果你希望用户在登录和注销时具有状态的响应，你可以使用具有`authenticated`属性的单个的 state 对象。你还需要使用 action creators 创建与用户登录和用户注销相对应的 action，以及 action 对象本身。
+
+代码编辑器为你创建了 store、actions、action creators。通过编写`reducer`函数来处理多个身份验证操作。可以在`reducer`通过使用 JavaScript 的`switch`来响应不同的 action 事件。这是编写 Redux reducer 时的标准模式，switch 语句选择`action.type`中的一个值并返回相应的身份验证状态。
+
+**注意：** 此时，不要担心 state 的不变性，因为在这个示例中它很小而且很简单。所以对于每个操作你都可以返回一个新对象，比如`{authenticated:true}`。另外，不要忘记在 switch 语句中写一个`default`case，返回当前的`state`。这是很重要的，因为一旦你的程序有多个 reducer，当一个 action 被 dispatch 时它们都会运行，即使 action 与该 reducer 无关。在这种情况下，你要确保返回当前的`state`
+
+```jsx
+const defaultState = {
+  authenticated: false
+};
+const authReducer = (state = defaultState, action) => {
+  switch (action.type){
+    case 'LOGIN':
+      return {
+        authenticated: true
+      }
+    case 'LOGOUT':
+      return {
+        authenticated: false
+      }
+    default:
+      return {
+        authenticated: state.authenticated
+      }
+  }
+};
+const store = Redux.createStore(authReducer);
+const loginUser = () => {
+  return {
+    type: 'LOGIN'
+  }
+};
+const logoutUser = () => {
+  return {
+    type: 'LOGOUT'
+  }
+};
+```
+
+## 使用 const 声明 Action Types
+
+在使用 Redux 时的一个常见做法是将操作类型指定为只读，然后在任何使用它们的地方引用这些常量。你可以通过将 action types 使用`const`声明重构你正在使用的代码。
+
+```js
+const LOGIN = 'LOGIN'
+const LOGOUT = 'LOGOUT'
+const defaultState = {
+  authenticated: false
+};
+const authReducer = (state = defaultState, action) => {
+  switch (action.type) {
+    case LOGIN:
+      return {
+        authenticated: true
+      }
+    case LOGOUT:
+      return {
+        authenticated: false
+      }
+    default:
+      return state;
+  }
+};
+const store = Redux.createStore(authReducer);
+const loginUser = () => {
+  return {
+    type: LOGIN
+  }
+};
+const logoutUser = () => {
+  return {
+    type: LOGOUT
+  }
+};
+
+```
+
+## Redux：注册 Store 监听器
+
+在 Redux `store`对象上访问数据的另一种方法是`store.subscribe()`。这允许你将监听器函数订阅到 store，只要一个 action 被 dispatch 就会调用它们。这个方法的一个简单用途是为你的 store 订阅一个函数，它只是在每次收到一个 action 并且更新 store 时记录一条消息。
+
+```jsx
+const ADD = 'ADD';
+const reducer = (state = 0, action) => {
+  switch(action.type) {
+    case ADD:
+      return state + 1;
+    default:
+      return state;
+  }
+};
+const store = Redux.createStore(reducer);
+let count = 0;
+store.subscribe(()=>{   // dispatch被调用，就会触发一次subscribe内的回调函数
+  count ++
+})
+store.dispatch({type: ADD});
+console.log(count);
+store.dispatch({type: ADD});
+console.log(count);
+store.dispatch({type: ADD});
+console.log(count);
+```
+
+## Redux：组合多个 Reduces
+
+当你应用程序的状态开始变得越来越复杂时，将状态划分为多个部分可能是个更好的选择。相反，请记住 Redux 的第一个原则：所有应用程序状态都保存在 store 中的一个简单的 state 对象中。因此，Redux 提供 reducer 组合作为复杂状态模型的解决方案。定义多个 reducer 来处理应用程序状态的不同部分，然后将这些 reducer 组合成一个 root reducer。然后将 root reducer 传递给 Redux `createStore()`方法。
+
+为了让我们将可以将多个 reducer 组合在一起，Redux 提供了`combineReducers()`方法。该方法接受一个对象作为参数，在该参数中定义一个将键与特定 reducer 函数关联的属性。Redux 将使用你给的键值作为关联状态的名称。
+
+通常情况下，当它们在某种程度上是独一无二的，为每个应用程序的 state 创建一个减少器是一个很好的做法。例如，在一个带有用户身份验证的记笔记应用程序中，一个 reducer 可以处理身份验证而另一个处理用户提交的文本和注释。对于这样的应用程序，我们可能会编写`combineReducers()`方法，如下所示：
+
+```jsx
+const rootReducer = Redux.combineReducers({
+ auth: authenticationReducer,
+ notes: notesReducer
+});
+```
+
+示例：
+
+```jsx
+const INCREMENT = 'INCREMENT';
+const DECREMENT = 'DECREMENT';
+const counterReducer = (state = 0, action) => {
+  switch(action.type) {
+    case INCREMENT:
+      return state + 1;
+    case DECREMENT:
+      return state - 1;
+    default:
+      return state;
+  }
+};
+const LOGIN = 'LOGIN';
+const LOGOUT = 'LOGOUT';
+const authReducer = (state = {authenticated: false}, action) => {
+  switch(action.type) {
+    case LOGIN:
+      return {
+        authenticated: true
+      }
+    case LOGOUT:
+      return {
+        authenticated: false
+      }
+    default:
+      return state;
+  }
+};
+const rootReducer = Redux.combineReducers({
+  count: counterReducer,
+  auth: authReducer
+})
+const store = Redux.createStore(rootReducer);
+
+```
+
+## 发送 Action Data 给 Store
+
+到目前为止，你已经学会了如何将 action dispatch 给 Redux store，但到目前为止，这些 action 并未包含除 `type`之外的任何信息。你还可以发送特定数据和 action 一起。事实上，这是非常常见的，因为 action 通常源于一些用户交互，并且往往会携带一些数据，Redux store 经常需要知道这些数据。
+
+```jsx
+const ADD_NOTE = 'ADD_NOTE';
+
+const notesReducer = (state = 'Initial State', action) => {
+  switch(action.type) {
+    case ADD_NOTE:
+      return action.text
+    default:
+      return state;
+  }
+};
+const addNoteText = (note) => {
+  return {
+    type: ADD_NOTE,
+    text: note
+  }
+};
+const store = Redux.createStore(notesReducer);
+console.log(store.getState());
+store.dispatch(addNoteText('Hello!'));
+console.log(store.getState());
+```
+
+## Redux：使用中间件处理异步操作
+
+目前为止的挑战都在避免讨论异步操作，但它们是 Web 开发中不可避免的一部分。在某些时候，你需要在 Redux 应用程序中使用异步请求，那么如何处理这些类型的请求？Redux 中间件专为此目的而设计，称为 Redux Thunk 中间件。这里简要介绍如何在 Redux 中使用它。
+
+如果要使用 Redux Thunk 中间件，请将其作为参数传递给`Redux.applyMiddleware()`。然后将此函数作为第二个可选参数提供给`createStore()`函数，看一下编辑器底部的代码，然后，要创建一个异步的 action，你需要在 action creator 中返回一个以`dispatch`为参数的函数。在这个函数中，你可以 dispatch action 并执行异步请求。
+
+```jsx
+const REQUESTING_DATA = 'REQUESTING_DATA'
+const RECEIVED_DATA = 'RECEIVED_DATA'
+
+const requestingData = () => { return {type: REQUESTING_DATA} }
+const receivedData = (data) => { return {type: RECEIVED_DATA, users: data.users} }
+const handleAsync = () => {	// 异步操作
+  return function(dispatch) {
+    // 在这里 dispatch 请求的 action
+    dispatch(requestingData())
+    setTimeout(function() {
+      let data = {
+        users: ['Jeff', 'William', 'Alice']
+      }
+      // 在这里 dispatch 接收到的数据 action
+    dispatch(receivedData(data))  
+    }, 2500);
+  }
+};
+
+const defaultState = {
+  fetching: false,
+  users: []
+};
+const asyncDataReducer = (state = defaultState, action) => {
+  switch(action.type) {
+    case REQUESTING_DATA:
+      return {
+        fetching: true,
+        users: []
+      }
+    case RECEIVED_DATA:
+      return {
+        fetching: false,
+        users: action.users
+      }
+    default:
+      return state;
+  }
+};
+const store = Redux.createStore(
+  asyncDataReducer,
+  Redux.applyMiddleware(ReduxThunk.default)
+);
+```
+
+## Redux：用 Redux 写一个计数器
+
+```jsx
+const INCREMENT = 'INCREMENT'; // 为增量 action 类型定义一个常量
+const DECREMENT = 'DECREMENT'; // 为减量 action 类型定义一个常量
+
+const counterReducer = (state = 0, action) => {
+  switch(action.type){
+    case INCREMENT:
+      return state + 1
+    case DECREMENT:
+      return state - 1
+    default:
+      return state
+  } 
+}; // 定义计数器，它将根据收到的action增加或减少状态
+
+const incAction = () => {
+  return {
+    type:INCREMENT
+  }
+}; // 定义一个用于递增的 action creator
+
+const decAction = () => {
+  return {
+    type:DECREMENT
+  }
+} // 定义一个用于递减的 action creator
+
+const store = Redux.createStore(counterReducer); // 在这里定义一个 Redux store，传递你的 reducer
+```
+
+## Redux：永不改变状态
+
+这些最后的挑战描述了在 Redux 中强制执行状态不变性关键原则的几种方法。不可变状态意味着你永远不会直接修改状态，而是返回一个新的状态副本。
+
+如果你拍摄 Redux 应用程序状态的快照，你会看到类似`state 1`，`state 2`，`state 3`，`state 4`，`...`等等，每个状态可能与最后一个状态相似，但每个状态都是一个独特的数据。事实上，这种不变性是什么提供了你可能听说过的时间旅行调试等功能。
+
+Redux 并没有积极地在其 store 或者 reducer 中强制执行状态不变性，责任落在程序员身上。幸运的是，JavaScript（尤其是 ES6）提供了一些有用的工具，可以用来强制执行状态的不变性，无论是`string`，`number`，`array`或`object`。请注意，字符串和数字是原始值，并且本质上是不可变的。换句话说，3 总是 3，你不能改变数字 3 的值。然而，`array`或`object`是可变的。实际上，你的状态可能包括`array`或`object`，因为它们在表示许多类型信息的数据结构时非常有用。
+
+换句话说，利用数组或者对象的特征，直接返回基于上一次的state的一个副本，而不是重新将state赋予一个新的地址
+
+```jsx
+const ADD_TO_DO = 'ADD_TO_DO';
+
+const todos = [
+  'Go to the store',
+  'Clean the house',
+  'Cook dinner',
+  'Learn to code',
+];
+
+const immutableReducer = (state = todos, action) => {
+  switch(action.type) {
+    case ADD_TO_DO:
+      return state.concat(action.todo) // 返回一个测试副本
+    default:
+      return state;
+  }
+};
+
+const addToDo = (todo) => {
+  return {
+    type: ADD_TO_DO,
+    todo
+  }
+}
+const store = Redux.createStore(immutableReducer);
+
+```
+
+## Redux：从数组中删除项目
+
+是时候练习从数组中删除项目了。扩展运算符也可以在这里使用。其他有用的JavaScript方法包括`slice()`和`concat()`。
+
+```jsx
+const immutableReducer = (state = [0,1,2,3,4,5], action) => {
+  switch(action.type) {
+    case 'REMOVE_ITEM':
+      // 此处不能使用splice，因为会改变原数组
+      return [...state].slice(0,action.index).concat([...state].slice(action.index +1))
+    default:
+      return state;
+  }
+};
+const removeItem = (index) => {
+  return {
+    type: 'REMOVE_ITEM',
+    index
+  }
+}
+
+const store = Redux.createStore(immutableReducer);
+```
+
+## Redux：使用 Object.assign 拷贝对象
+
+最后几个挑战适用于数组，但是当状态是`object`时，有一些方法可以帮助强制执行状态不变性。处理对象的一个方法是`Object.assign()`。`Object.assign()`获取目标对象和源对象，并将源对象中的属性映射到目标对象。任何匹配的属性都会被源对象中的属性覆盖。通常用于通过传递一个空对象作为第一个参数，然后是要用复制的对象来制作对象的浅表副本。这是一个例子：
+
+```jsx
+const newObject = Object.assign({}, obj1, obj2);
+```
+
+这会创建`newObject`作为新的`object`，其中包含`obj1`和`obj2`中当前存在的属性。
+
+```jsx
+const defaultState = {
+  user: 'CamperBot',
+  status: 'offline',
+  friends: '732,982',
+  community: 'freeCodeCamp'
+};
+const immutableReducer = (state = defaultState, action) => {
+  switch(action.type) {
+    case 'ONLINE':
+      // 使用Object.assign 从最后一个参数到第二个参数来合并一个对象，并生成一个新的浅拷贝对象
+      return Object.assign({},state,{status: 'online'})
+    default:
+      return state;
+  }
+};
+const wakeUp = () => {
+  return {
+    type: 'ONLINE'
+  }
+};
+
+const store = Redux.createStore(immutableReducer);
+```
+
+## React 和 Redux：首先在本地管理状态
+
+```jsx
+class DisplayMessages extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      input: '',
+      messages: []
+    }
+    this.handleChange = this.handleChange.bind(this)
+    this.submitMessage = this.submitMessage.bind(this)
+  }
+  handleChange(event){
+      this.setState({
+        input:event.target.value
+      })
+  }
+  submitMessage(){
+      this.setState({
+        input:'', 
+        messages: this.state.messages.concat(this.state.input)
+      })
+  }
+  render() {
+    const {input, messages} = this.state
+    const msg = messages.map((item,idx) => ( // 注意添加key
+      <li key={idx}>{item}</li>
+    ))
+    return (
+      <div>
+        <h2>键入新 Message</h2>
+        <input onChange={this.handleChange} value={input} />
+        <button onClick={this.submitMessage}>Add message</button>
+        <ul>
+          {msg}
+        </ul>
+
+      </div>
+    );
+  }
+};
+```
+
+## React 和 Redux：提取状态逻辑给 Redux
+
+完成 React 组件后，我们需要把在本地`状态`执行的逻辑移到 Redux 中，这是为小规模 React 应用添加 Redux 的第一步。该应用的唯一功能是把用户的新消息添加到无序列表中。下面我们用简单的示例来演示 React 和 Redux 之间的配合。
+
+```jsx
+const ADD = 'ADD'
+const messages = []
+const messageReducer = (state = messages,action) => {
+  switch (action.type){
+    case ADD :
+      return [
+        ...state,
+        action.message
+      ];
+    default :
+      return state
+  }
+}
+
+const addMessage = (message) => {
+  return{
+    type:ADD,
+    message
+  }
+}
+
+const store = Redux.createStore(messageReducer)
+
+```
+
+## React 和 Redux：使用 Provider 连接 Redux 和 React
+
+在上一挑战中，你创建了 Redux store 和 action，分别用于处理消息数组和添加新消息。下一步要为 React 提供访问 Redux store 及发起更新所需的 actions。`react-redux`包可帮助我们完成这些任务。
+
+React Redux 提供的 API 有两个关键的功能：`Provider`和`connect`。你会在另一个挑战中学`connect`。`Provider`是 React Redux 包装 React 应用的 wrapper 组件，它允许你访问整个组件树中的 Redux`store`及`dispatch（分发）`方法。`Provider`需要两个 props：Redux store 和 APP 应用的子组件。用于 APP 组件的`Provider`可这样定义：
+
+```jsx
+<Provider store={store}>
+ <App/>
+</Provider>
+```
+
+```jsx
+// Redux 代码：
+const ADD = 'ADD';
+
+const addMessage = (message) => {
+  return {
+    type: ADD,
+    message
+  }
+};
+
+const messageReducer = (state = [], action) => {
+  switch (action.type) {
+    case ADD:
+      return [
+        ...state,
+        action.message
+      ];
+    default:
+      return state;
+  }
+};
+
+
+const store = Redux.createStore(messageReducer);
+// React 代码：
+
+class DisplayMessages extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      input: '',
+      messages: []
+    }
+    this.handleChange = this.handleChange.bind(this);
+    this.submitMessage = this.submitMessage.bind(this);
+  }
+  handleChange(event) {
+    this.setState({
+      input: event.target.value
+    });
+  }
+  submitMessage() {
+    const currentMessage = this.state.input;
+    this.setState({
+      input: '',
+      messages: this.state.messages.concat(currentMessage)
+    });
+  }
+  render() {
+    return (
+      <div>
+        <h2>Type in a new Message:</h2>
+        <input
+          value={this.state.input}
+          onChange={this.handleChange}/><br/>
+        <button onClick={this.submitMessage}>Submit</button>
+        <ul>
+          {this.state.messages.map( (message, idx) => {
+              return (
+                 <li key={idx}>{message}</li>
+              )
+            })
+          }
+        </ul>
+      </div>
+    );
+  }
+};
+const Provider = ReactRedux.Provider;
+
+class AppWrapper extends React.Component {
+  // 在此渲染 Provider
+    constructor(props){
+        super(props)
+    }
+    render(){
+        return (
+            <Provider store={store}>
+                <DisplayMessages />
+            </Provider>
+        )
+    }
+  // 请在本行以上添加你的代码
+};
+```
+
+## React 和 Redux：映射 State 到 Props
+
+`Provider`可向 React 组件提供`state`和`dispatch`，但你必须确切地指定所需要的 state 和 actions，以确保每个组件只能访问所需的 state。
+
+```jsx
+const state = [];
+
+// 编写getter函数，将state以对象的值的形式返回给Provider组件
+const mapStateToProps = (state) => {
+  return {
+    messages:state
+  }
+}
+```
+
+## React 和 Redux：映射 Dispatch 到 Props
+
+`mapDispatchToProps()`函数可为 React 组件提供特定的创建 action 的函数，以便组件可 dispatch actions，从而更改 Redux store 中的数据。该函数的结构跟上一挑战中的`mapStateToProps()`函数相似，它返回一个对象，把 dispatch actions 映射到属性名上，该属性名成为`props`。然而，每个属性都返回一个用 action creator 及与 action 相关的所有数据调用`dispatch`的函数，而不是返回`state`的一部分。你可以访问`dispatch`，因为在定义函数时，我们以参数形式把它传入`mapDispatchToProps()`了，这跟`state`传入`mapDispatchToProps()`是一样的。在幕后，React Redux 用 Redux 的`store.dispatch()`来管理这些含`mapDispatchToProps()`的dispatches，这跟它使用`store.subscribe()`来订阅映射到`state`的组件的方式类似。
+
+```jsx
+const addMessage = (message) => {
+  return {
+    type: 'ADD',
+    message: message
+  }
+};
+
+// 将return中的函数映射到组件的props中，在组件的props中就可以访问这些函数，来调用相应的dispatch
+const mapDispatchToProps = (dispatch) => {
+    return {
+        submitNewMessage: (message) => {
+            dispatch(addMessage(message))
+        }
+    }
+}
+```
+
+## React 和 Redux：连接 Redux 和 React
+
+既然写了`mapStateToProps()`、`mapDispatchToProps()`两个函数，现在你可以用它们来把`state`和`dispatch`映射到 React 组件的`props`了。React Redux 的`connect`方法可以完成这个任务。此方法有`mapStateToProps()`、`mapDispatchToProps()`两个可选参数，它们是可选的，原因是你的组件可能仅需要访问`状态`但不需要分发任何 actions，反之亦然。
+
+为了使用此方法，需要传入函数参数并在调用时传入组件。这种语法有些不寻常，如下所示：
+
+```jsx
+// connect返回一个新常量，这个常量就是已经连接Redux的Component组件副本
+const ConnectedComponent = connect(mapStateToProps, mapDispatchToProps)(Component)
+```
+
+
+
+## React 和 Redux：将 Redux 连接到 Messages App
+
+知道`connect`怎么实现 React 和 Redux 的连接后，我们可以在 React 组件中应用上面学到的内容。
+
+在上一课，连接到 Redux 的组件命名为`Presentational`，这个命名不是任意的，这样的术语通常是指未直接连接到 Redux 的 React 组件，他们只负责执行接收 props 的函数来实现 UI 的呈现。与上一挑战相比，本挑战需要把容器组件连接到 Redux。这些组件通常负责把 actions 分派给 store，且经常给子组件传入 store state 属性。
+
+到目前为止，我们的编辑器上已包含了整个章节的代码，唯一不同的是，React 组件被重新命名为`Presentational`，即展示层组件。创建一个新组件，保存在名为`Container`的常量中。这个常量用`connect`把`Presentational`组件和 Redux 连接起来。然后，在`AppWrapper`中渲染 React Redux 的`Provider`组件，给`Provider`传入 Redux`store`属性并渲染`Container`为子组件。完成这些，消息 app 应用会再次渲染页面。
+
+## React 和 Redux：将局部状态提取到 Redux 中
+
+现在有了连接好的 Redux，你还要从`Presentational`组件中提取状态管理到 Redux，在`Presentational`组件内处理本地状态。
+
+在`Presentational`组件中，先删除本地`state`中的`messages`属性，被删的 messages 将由 Redux 管理。接着，修改`submitMessage()`方法，使该方法从`this.props`那里分发`submitNewMessage()`；从本地`state`中传入当前消息输入作为参数。因本地状态删除了`messages`属性，所以在调用`this.setState()`时也要删除该属性。最后，修改`render()`方法，使其所映射的消息是从`props`接收的，而不是`state`
+
+完成这些更改后，我们的应用会实现 Redux 管理应用的状态，但它继续运行着相同的功能。此示例还阐明了组件获得本地状态的方式，即在自己的状态中继续跟踪用户本地输入。由此可见，Redux 为 React 提供了很有用的状态管理框架。先前，你仅使用 React 的本地状态也实现了相同的结果，这在应付简单的应用时通常是可行的。但是，随着应用变得越来越大，越来越复杂，应用的状态管理也变得非常困难，Redux 就是为解决这样的问题而诞生的。
+
+```jsx
+// Redux:
+const ADD = 'ADD';
+
+const addMessage = (message) => {
+  return {
+    type: ADD,
+    message: message
+  }
+};
+
+const messageReducer = (state = [], action) => {
+  switch (action.type) {
+    case ADD:
+      return [
+        ...state,
+        action.message
+      ];
+    default:
+      return state;
+  }
+};
+
+const store = Redux.createStore(messageReducer);
+
+// React:
+const Provider = ReactRedux.Provider;
+const connect = ReactRedux.connect;
+
+// 请在本行以下添加你的代码
+class Presentational extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      input: '',
+    }
+    this.handleChange = this.handleChange.bind(this);
+    this.submitMessage = this.submitMessage.bind(this);
+  }
+  handleChange(event) {
+    this.setState({
+      input: event.target.value
+    });
+  }
+  submitMessage() {
+    this.props.submitNewMessage(this.state.input)
+    this.setState({
+      input: '',
+    });
+  }
+  render() {
+    const messages = this.props.messages.map( (item, idx) =>(<li key={idx}>{item}</li>)}
+    return (
+      <div>
+        <h2>Type in a new Message:</h2>
+        <input
+          value={this.state.input}
+          onChange={this.handleChange}/><br/>
+        <button onClick={this.submitMessage}>Submit</button>
+        <ul>
+          {messages}
+          }
+        </ul>
+      </div>
+    );
+  }
+};
+
+const mapStateToProps = (state) => {
+  return {messages: state}
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    submitNewMessage: (message) => {
+      dispatch(addMessage(message))
+    }
+  }
+};
+
+const Container = connect(mapStateToProps, mapDispatchToProps)(Presentational);
+
+class AppWrapper extends React.Component {
+  render() {
+    return (
+      <Provider store={store}>
+        <Container/>
+      </Provider>
+    );
+  }
+};
+```
+
 
 
 ## React Hook
 
-在没有Hook`之前，函数组件与class(类)组件的区别：
+在没有`Hook`之前，函数组件与class(类)组件的区别：
 
 * 类组件有`this` ，而函数组件没有`this`
 * 类组件拥有`state` ，而函数组件没有 state
