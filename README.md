@@ -1,37 +1,31 @@
-## Welcome to GitHub Pages
+# 欢迎来到我的Github笔记仓库
 
-You can use the [editor on GitHub](https://github.com/MrReeese/Note/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+这里是我探索和学习前端技术的途中记下的笔记  
+这些笔记包括一些代码演示，其中部分文本来自于一些技术的官方文档，但是大部分内容为在我理解后所手写下来的，例如:react基础中对react的Hook的理解
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
-### Markdown
+## 目录
+JS相关
+* [ES6-11](./ES6-11)
+* [JS算法与数据结构](./JS算法与数据结构)
+* [NodeJs入门](./NodeJs)
+* [前端面试题](./前端面试题)
+* [正则表达式](./正则表达式)
+* [jQuery](./jQuery)
+* [JS模块化](./JavaScript%20modularization)
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+前端框架：
+* [React基础](./React基础)
+* [Vue基础](./Vue)
 
-```markdown
-Syntax highlighted code block
+项目文档
+* [React项目](./React项目) 
+* [Vue项目](./Vue项目) (未完成)
 
-# Header 1
-## Header 2
-### Header 3
+H5：
+* [CSS高级](./cssNode)
+* [Canvas](./Canvas)
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/MrReeese/Note/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+部署
+* [Linux下Docker的部署](./Docker部署)
+* [Git使用指南以及机制](./Git)

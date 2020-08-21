@@ -45,143 +45,276 @@
 
    ## 实现队列
 
-   
 
 * 使用队列实现约瑟夫环
 
-```js
-function Queue (size) {
-  this.items = []
-  this.index = 0
-  this.maxSize = size
-}
-Queue.prototype = {
-  constructor: Queue,
-  enter (item) {
-    if (this.index < this.maxSize) {
-      item !== '' ? this.items[this.index++] = item : console.log('数据不能为空')
-    } else {
-      console.log('当前队列已满')
-    }
-  },
-  shift () {
-    if (!this.isEmpty()) {
-      this.index--
-      return this.items.shift()
-    } else {
-      console.log('当前队列为空')
-    }
-  },
-  peek () {
-    if (!this.isEmpty()) {
-      return this.items[0]
-    } else {
-      console.log('栈当前为空')
-      return null
-    }
-  },
-  isEmpty () {
-    return this.index === 0
-  },
-  size () {
-    return this.index
-  },
-  clear () {
-    this.index = 0
+  ```js
+  function Queue (size) {
     this.items = []
-  },
-  toString () {
-    return `head->| ${this.items.map(item => item)} |<-tail`
+    this.index = 0
+    this.maxSize = size
   }
-}
-
-function josephRing (arr,num) {
-  let res = null
-  let queue = new Queue(arr.length)
-  for (let i = 0; i < arr.length; i++) {
-    queue.enter(arr[i])
-  }
-  for (let i = 0; i <arr.length-1 ; i++) {
-    for (let j = 0; j <num -1 ; j++) {
-      queue.enter(queue.shift())
+  Queue.prototype = {
+    constructor: Queue,
+    enter (item) {
+      if (this.index < this.maxSize) {
+        item !== '' ? this.items[this.index++] = item : console.log('数据不能为空')
+      } else {
+        console.log('当前队列已满')
+      }
+    },
+    shift () {
+      if (!this.isEmpty()) {
+        this.index--
+        return this.items.shift()
+      } else {
+        console.log('当前队列为空')
+      }
+    },
+    peek () {
+      if (!this.isEmpty()) {
+        return this.items[0]
+      } else {
+        console.log('栈当前为空')
+        return null
+      }
+    },
+    isEmpty () {
+      return this.index === 0
+    },
+    size () {
+      return this.index
+    },
+    clear () {
+      this.index = 0
+      this.items = []
+    },
+    toString () {
+      return `head->| ${this.items.map(item => item)} |<-tail`
     }
-    res = queue.shift()
-    //console.log(res)
   }
-  return queue.peek()
-}
-console.log(josephRing([1,2,3,4,5,6],2))
-```
+  
+  function josephRing (arr,num) {
+    let res = null
+    let queue = new Queue(arr.length)
+    for (let i = 0; i < arr.length; i++) {
+      queue.enter(arr[i])
+    }
+    for (let i = 0; i <arr.length-1 ; i++) {
+      for (let j = 0; j <num -1 ; j++) {
+        queue.enter(queue.shift())
+      }
+      res = queue.shift()
+      //console.log(res)
+    }
+    return queue.peek()
+  }
+  console.log(josephRing([1,2,3,4,5,6],2))
+  ```
+
+  
 
 * 使用插入排序实现优先级队列
 
-```js
-function priorityQueue (size) {
-  function QueueElement (value, priority) {
-    this.value = value
-    this.priority = priority
-  }
-  this.items = []
-  this.index = 0
-  this.maxSize = size
-
-  this.enter = function (value, priority) {
-    if (this.index < this.maxSize) {
-      let element = new QueueElement(value, priority)
-      if (this.isEmpty()) {
-        this.items.push(element)
-      } else {
-        // 经典插入排序
-        let flag = false	// 扫描标志位
-        for (let i = 0; i < this.size(); i++) {
-          if (this.items[i].priority > element.priority) { //检测到有元素的优先级比新元素优先级大
-            this.items.splice(i, 0, element) // 在当前位置插入
-            flag = true // 标识已经插入
-            break
+  ```js
+  function priorityQueue (size) {
+    function QueueElement (value, priority) {
+      this.value = value
+      this.priority = priority
+    }
+    this.items = []
+    this.index = 0
+    this.maxSize = size
+  
+    this.enter = function (value, priority) {
+      if (this.index < this.maxSize) {
+        let element = new QueueElement(value, priority)
+        if (this.isEmpty()) {
+          this.items.push(element)
+        } else {
+          // 经典插入排序
+          let flag = false	// 扫描标志位
+          for (let i = 0; i < this.size(); i++) {
+            if (this.items[i].priority > element.priority) { //检测到有元素的优先级比新元素优先级大
+              this.items.splice(i, 0, element) // 在当前位置插入
+              flag = true // 标识已经插入
+              break
+            }
+          }
+          if (!flag) { // 如果队列中所有的元素优先级都比新元素小
+            this.items.push(element) // 放置在队列最后
           }
         }
-        if (!flag) { // 如果队列中所有的元素优先级都比新元素小
-          this.items.push(element) // 放置在队列最后
+        this.index++ // 增加index
+      } else {
+        console.log('当前队列已满')
+      }
+    }
+  }
+  priorityQueue.prototype = Queue.prototype // 继承普通队列的一些方法
+  
+  let pQueue = new priorityQueue(10)
+  pQueue.enter('Apple', 10)
+  pQueue.enter('sbb', 30)
+  pQueue.enter('xiaomi',20)
+  pQueue.enter('lenovo',3)
+  
+  console.log(pQueue)
+  ```
+
+  
+
+* 插入排序
+
+  ```js
+  function insertSort (arr) {
+      let arrCpy = arr.slice(0)
+      let i,j
+      let temp
+      for (i = 1; i < arrCpy.length; i++) { // 一共循环n-1次，因为一第一个元素为参照进行插入
+          temp = arrCpy[i]	// 保存要插入值
+          // 从前面的有序序列的最后一个位置开始向前与插入值比较，如果遇到比插入值大的元素，则将该元素往后移一位
+          for (j = i-1; j >=0 && arrCpy[j] > temp; j--) { 
+              // 如果遇到元素的值比插入值小，则直接跳出循环，此时j指向的是比插入值小的元素，j+1此时要么指向i 要么指向已经向后移位的元素
+              arrCpy[j+1] = arrCpy[j]
+          }
+          arrCpy[j+1] = temp // 将值插入进去
+      }
+      return arrCpy
+  }
+  console.log(insertSort([4,5,7,5,4,23,6]) )
+  ```
+
+* 选择排序
+
+  ```js
+  function selectSort (array) {
+      const arrCpy = array.slice(0)
+      let i,j,minIndex
+      for( i = 0; i<arrCpy.length - 1 ;i++){
+      	minIndex = i // 保存初始下标
+          for( j = i + 1 ; j < arrCpy.length ; j++){
+              // 如果找到比minIndex位置小的元素，则更新minIndex
+              if(arrCpy[j] < arrCpy[minIndex]){ 
+                  minIndex = j
+              }
+          }
+          if(minIndex !== i){
+              [arrCpy[i],arrCpy[minIndex]]=[arrCpy[minIndex],arrCpy[i]]
+          }
+      }
+      return arrCpy
+  }
+  ```
+
+  
+
+* 交换排序
+
+  ```js
+  function swapSort(array) {
+    const arrCpy = array.slice(0)
+    for(let i = 0 ; i < arrCpy.length -1 ; i++){
+      for(let j = i + 1 ; j < arrCpy.length ; j ++){
+        if(arrCpy[i] > arrCpy[j]){
+          [arrCpy[i], arrCpy[j]] = [arrCpy[j], arrCpy[i]]
         }
       }
-      this.index++ // 增加index
-    } else {
-      console.log('当前队列已满')
     }
+    return arrCpy;
   }
-}
-priorityQueue.prototype = Queue.prototype // 继承普通队列的一些方法
+  ```
 
-let pQueue = new priorityQueue(10)
-pQueue.enter('Apple', 10)
-pQueue.enter('sbb', 30)
-pQueue.enter('xiaomi',20)
-pQueue.enter('lenovo',3)
+* 冒泡排序
 
-console.log(pQueue)
-```
-
-* js实现插入排序
-
-```js
-function insertSort (arr) {
-  let arrCpy = arr.slice(0)
-  let i,j
-  let temp
-  for (i = 1; i < arrCpy.length; i++) { // 一共循环n-1次，因为一第一个元素为参照进行插入
-    temp = arrCpy[i]	// 保存要插入值
-    // 从前面的有序序列的最后一个位置开始向前与插入值比较，如果遇到比插入值大的元素，则将该元素往后移一位
-    for (j = i-1; j >=0 && arrCpy[j] > temp; j--) { 
-        // 如果遇到元素的值比插入值小，则直接跳出循环，此时j指向的是比插入值小的元素，j+1此时要么指向i 要么指向已经向后移位的元素
-      arrCpy[j+1] = arrCpy[j]
+  ```js
+  function bubbleSort(array) {
+    const arrCpy = array.slice(0)
+    let flag = true
+    for(let i = 0; i< arrCpy.length  ; i++){
+      flag = true
+      for(let j=0 ; j< arrCpy.length -i ; j++){
+        if(arrCpy[j] > arrCpy[j+1]){
+          [arrCpy[j],arrCpy[j+1]] = [arrCpy[j+1],arrCpy[j]]
+          flag = false
+        }
+      }
+      if(flag){ // 如果没有进行过冒泡过程，说明数组已经有序
+        break
+      }
     }
-    arrCpy[j+1] = temp // 将值插入进去
+    return arrCpy;
   }
-  return arrCpy
-}
-console.log(insertSort([4,5,7,5,4,23,6]) )
+  ```
 
-```
+* js快速排序
+
+  * 快速排序可以再一次循环中（包含递归），找出某个元素的正确的位置，并且不需要再次移动
+
+  * 核心思想：分而治之，选择一个基数，将数组分为2部分，将小于基数的放在左边，大于基数的放在右边，由此可以得到基数最终的位置
+
+  * 选择一个枢纽，取头 中 尾元素中的一个中位数，例如头部第一个值为3 中部的值为8 尾部值为 1，则选择中部的8作为枢纽
+
+    ```js
+    function getPivot (array,left,right) {
+      let center  = Math.floor((left + right) / 2 )
+      // 将左中右三个数进行排序，再将中位数与倒数第二个数进行交换，返回中位数作为枢纽
+      if(array[left] > array[right]){
+        [array[left],array[right]] = [array[right],array[left]]
+      }
+      if(array[left] > array[center]){
+        [array[left],array[center]] = [array[center],array[left]]
+      }
+      if(array[center] > array[right]){
+        [array[right],array[center]] = [array[center],array[right]]
+      }
+      [array[center],array[right -1]] = [array[right -1 ],array[center]]
+      return array[right -1]
+    }
+    
+    function quickSort (array) {
+      let arrCpy = array.slice(0)
+      quickSortPrecess(arrCpy,0,arrCpy.length -1)
+      return arrCpy
+    
+    }
+    function quickSortPrecess (array,low,high) {
+      // 结束条件
+      if(low >= high){
+        return
+      }
+      // 得到当前分组的枢纽
+      let pivot = getPivot(array,low,high)
+      let i = low
+      let j = high - 1 // 指向枢纽的位置
+      // 在寻找完枢纽后，三个以下的元素的子数组不用再继续排序，否则两两排序会出现问题
+      if(high - low <= 2){
+          return
+      }
+      while (true){
+        // 从低位到高位扫描，从最低位的后一位开始，当扫描元素值小于等于枢纽值则继续扫描，当扫描值大于枢纽值，跳出
+        while (array[++i] < pivot){} 
+       // 跳出从低位到高位扫描后，从枢纽位的前一位开始，从高向低扫描，当扫描元素值大于等于枢纽值则继续扫描，当扫描值小于枢纽值，跳出
+        while (array[--j] > pivot){}
+       // 当以上循环均跳出，且i和j没有穿过彼此(i是要小于j才说明扫描并未结束)，交换双方位置的值，否则，这一轮扫描与交换结束
+        if (i < j){
+          [array[i], array[j]]=[array[j], array[i]]
+        } else {
+          break
+        }
+      }
+      // 如果i与high -1 指向的不是同一个位置，则交换
+      if(i !== high-1){
+          [array[i],array[high -1]]=[array[high -1], array[i]]
+    }
+      // 递归处理左分组
+      quickSortPrecess(array,low,i -1)
+      // 递归处理右分组
+      quickSortPrecess(array,i + 1 , high)
+    }
+    ```
+    
+    
 
 ## 实现链表
 
@@ -557,10 +690,40 @@ function (num){
 
   * min()
 
+    ```js
+  min(){
+        if (!this.root){ // 空根，退出
+          return false
+        }
+        let currentNode = this.root // 一直向左子树寻找，直到左子树为null
+        while(currentNode.left){
+            currentNode = currentNode.left
+        }
+        return currentNode.key
+    }
+    ```
+  
+    
+  
   * max()
-
+  
+    ```js
+    max(){
+        if (!this.root){
+          return false
+        }
+        let currentNode = this.root
+        while(currentNode.right){
+          currentNode = currentNode.right
+        }
+        return currentNode.key
+    }
+    ```
+  
+    
+  
   * remove(key)
-
+  
     ```js
     removeNode(key){
         let currentNode = this.root
@@ -651,13 +814,13 @@ function (num){
             successor.left = currentNode.left
             return true
           }
-    
+  
         //  没有找到这个节点，返回false
-        } else {
+      } else {
           return false
-        }
-    
       }
+    
+    }
       // 获取后继节点
       getNodeSuccessor(node){
         if (!node){
@@ -681,17 +844,46 @@ function (num){
         return successor
       }
     ```
-
+  
     在实际操作中，删除二叉树节点操作编码比较复杂，而且开销相对较大，所以一般情况下，尽量避免删除操作，而是给Node节点类添加一个`isDelete`的Boolean值，来标识当前节点是否删除，这样只需要寻找到删除的节点即可，而标识了被删除的节点在寻找时不会被返回，而是向下寻找或者跳出，但是这种处理方法会浪费大量的空间。
-
+  
+    ### 寻找二叉树的最小深度
+  
+    ```js
+  function run( root ) {
+        if(!root)
+        return 0;
+        if(!root.left && !root.right)
+        return 1;
     
-
+        let depth = 0
+        let queue = []
+        queue.push(root);
+        while(queue.length){
+            let len = queue.length // 必须记录上次放入的节点数，否则depth不会增加
+            depth++;
+            for(let i = 0; i < len; i++){
+                let cur = queue.shift()        
+                if(!cur.left && !cur.right)
+                    return depth;
+                if(cur.left)
+                    queue.push(cur.left);
+                if(cur.right)
+                    queue.push(cur.right);
+            }              
+        }
+        return 0;
+    }
+    ```
+    
+    
+    
     ### 二叉搜索树的缺陷
-
+    
     当按照有序，或者大部分有序的的方式插入数据，二叉搜索树的根节点会出现左子树过小，右子树过大，和与之相反的情况，二叉搜索树将失去平衡
-
+    
     解决方法：
-
+    
     * 使用AVL树，自平衡二叉查找树，每个节点多存储了一个额外的数据
     * 红黑树：目前广泛使用的平衡树，使用一些特性来保持平衡，在插入、删除操作时，性能优于AVL树
       * 节点只有红色和黑色两种
@@ -699,4 +891,74 @@ function (num){
       * 每个叶子节点都是黑色的空节点(NIL)
       * 每个红色节点的两个子节点都是黑色
       * 从任意节点到其每个叶子姐弟啊你的所有路径都包含相同数目的黑色节点
+
+
+
+
+
+## 计算逆波兰式（后缀表达式）的值
+
+* 使用递归方法 加 字符串拼接和eval(）
+
+  ```js
+  function evalRPN (tokens) {
+    if (tokens.length > 1) {
+      for (let i = 2; i < tokens.length; i++) {
+        if (/^[+\-*\/]$/.test(tokens[i])) {
+          let res = `(${tokens[i - 2]})${tokens[i]}(${tokens[i - 1]})`
+          tokens.splice(i - 2, 3, parseInt(eval(res)))
+          evalRPN(tokens)
+        }
+      }
+    }
+    return tokens[0]
+  }
+  console.log(evalRPN(["4", "13", "5", "/", "+"]))
+  ```
+
+* 栈方法
+
+  ```js
+  function evalRPN2 (tokens) {
+    const arrCpy = tokens.slice(0)
+    const temp = []
+    const reg = /^[+\-*\/]$/
+    const _operators = {
+      '+': (a, b) => (+a) + (+b),
+      '-': (a, b) => (+a) - (+b),
+      '*': (a, b) => (+a) * (+b),
+      '/': (a, b) => (+a) / (+b),
+    }
+    while (arrCpy.length > 0) {
+      if (!reg.test(arrCpy[0])) {
+        temp.push(arrCpy.shift())
+      } else {
+        const num2 = temp.pop()
+        const num1 = temp.pop()
+        const operator = arrCpy.shift()
+        temp.push(_operators[operator](num1, num2))
+      }
+    }
+    return temp.toString()
+  }
+  ```
+
+  
+
+## 转换数字为分隔格式
+
+```js
+function paddingNum(number){
+  let str = number.toString()
+  let arr = str.split('.')
+  let left = arr[0].split('') //得到整数部分
+  for (let i = left.length - 3; i > 0 ; i -= 3) { //从倒数第三位开始，向前扫描，并插入逗号
+    left.splice(i, 0, ',')
+  }
+  // 返回处理后的整数部分+小数部分
+  return left.join('').concat(arr[1] ? '.'+arr[1]:'' )
+}
+```
+
+
 
