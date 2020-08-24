@@ -112,7 +112,7 @@ http://47.115.62.216:5000
   * 附加项：
     * 登陆cookie持久化，维持登陆一天
 
-  ![image-20200824150528879](https://github.com/MrReeese/proxy/tree/master/img/image-20200824150528879.png?raw=true)
+  ![image-20200824150528879](https://github.com/MrReeese/proxy/tree/master/img/image-20200824150528879.png)
 
 * 注册页面
 
