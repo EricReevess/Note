@@ -537,6 +537,8 @@ function (num){
 }
 ```
 
+# 二叉树
+
 ## 二叉搜索树（BST）
 
 * 概念：
@@ -892,9 +894,115 @@ function (num){
       * 每个红色节点的两个子节点都是黑色
       * 从任意节点到其每个叶子姐弟啊你的所有路径都包含相同数目的黑色节点
 
+## 线索二叉树
+
+普通完全二叉树的问题：n个节点一共有2n个指针，除了根节点之外，n-1个节点都被2n个指针中的n-1个指针引用着，所以剩下2n-(n-1) = n + 1个指针域为null
+
+如果我们将这n + 1 个指针域在某种遍历次序下存放下一个遍历的前驱或者后继，那么这样的二叉树成为线索二叉树
+
+按照遍历次序不同可分为三种线索二叉树：前序、中序、后序
+
+空节点指向规则：
+
+* 如果节点的左指针没有被使用，那么左指针指向遍历次序的前驱节点
+* 如果节点的右指针没有被使用，那么右指针指向遍历次序的后继节点
+
+```js
+// 线索化二叉树方法,在搜索二叉树的基础上实现
+inOrderThreadedNodes = (node = this.root) => {
+    if (!node){
+        return
+    }
+    // 线索化左子树
+    this.inOrderThreadedNodes(node.left)
+    // 处理前驱节点
+    if (!node.left){
+        node.left = this.pre
+        node.leftIstree = false
+    }
+    // 处理后继节点，使用一个全局变量指向中序遍历的上一个节点，为上一个节点线索后继指针
+    // 当pre不为空，且pre的后继指针没有被使用的时候，pre的后继就是当前节点
+    if (this.pre && !this.pre.right){
+        this.pre.right = node
+        this.pre.rightIstree = false
+    }
+    // 处理节点后，改变pre成为下一个前驱节点
+    this.pre = node
+
+    // 线索化右子树
+    this.inOrderThreadedNodes(node.right)
+}
+
+inOrderTraverseThreadedNodes = () => {
+    let p = this.root
+    // 当p不为空的时候循环
+    while (p){
+        // 当p的节点的左指针指向的是子树而不是前驱，则一直循环直到找到最左的元素
+        while (p.leftIstree){
+            p = p.left
+        }
+        // 输出这个值
+        console.log(p.key)
+        // 如果p的右节点指向的不是子树，而是后继节点，则直接向后继节点访问
+        while (!p.rightIstree){
+            p = p.right
+            console.log(p.key)
+        }
+        // 当遇到了右指针指向子树的节点，则跳转到这个节点，继续循环以上步骤，直到p为null
+        p = p.right
+    }
+
+}
+```
 
 
 
+## 红黑树
+
+红黑树规则
+1. 节点只能是红色和黑色
+2. 根节点是黑色
+3. 每个叶子节点都是黑色且空节点（NIL节点）
+4. 黑节点可以连续，红节点不能连续出现
+5. 红节点的子节点都必须是黑色节点
+6. 从任意节点到其子树的叶子节点的路径上包含相同的黑色节点
+
+红黑树特性：
+
+*   从根到叶子的最长路径，不会超过最短路径的两倍
+
+红黑树变换
+
+*   插入：新节点一般默认为红色节点，如果新节点为黑色会难以调整
+*   左旋转：逆时针旋转
+*   右旋转：顺时针旋转
+
+红黑树插入
+
+相关节点角色：红色新节点:N  新节点的兄弟节点:B	新节点的双亲节点:P	新节点的祖节点:G	新节点的双亲节点的兄弟节点:U
+
+在搜索二叉树规则下进行插入新节点替换为某个黑色NIL节点之后，在红色新节点上添加2个叶子节点NIL，此时有5种可能的情况
+
+1. N是根节点，直接将N的红色变为黑色（规则2）
+
+2. N的P是黑色，不做任何变换
+
+3. P是红色，U也是红色，G一定为黑色，此时需将P和U变为黑色，G变为红色
+
+   1. 如果变化后G为根节点，则将G以及整个子树都插入到内容为空的红黑树中，即G变为黑色
+
+   ![image-20200822114725471](C:\Users\Fusion\AppData\Roaming\Typora\typora-user-images\image-20200822114725471.png)
+
+4. N是P的左子节点，P为红色，且P的右子节点不为空，U为黑色，G为黑色，此时需要将P变为黑色，G变为红色，再进行右旋转
+
+   ![image-20200822115425240](C:\Users\Fusion\AppData\Roaming\Typora\typora-user-images\image-20200822115425240.png)![image-20200822115551815](C:\Users\Fusion\AppData\Roaming\Typora\typora-user-images\image-20200822115551815.png)
+
+5. N是P的右子节点，P为红色，且P的左子节点B不为空，U为黑色，G为黑色，此时
+
+   1. 以P为根进行左旋转
+   2. 将G变为红色，N变为黑色，以G为根进行右旋转   
+
+   ![image-20200822123122453](C:\Users\Fusion\AppData\Roaming\Typora\typora-user-images\image-20200822123122453.png)
 
 ## 计算逆波兰式（后缀表达式）的值
 
