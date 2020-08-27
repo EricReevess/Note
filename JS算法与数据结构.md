@@ -313,7 +313,7 @@
       quickSortPrecess(array,i + 1 , high)
     }
     ```
-    
+
     
 
 ## 实现链表
@@ -476,7 +476,7 @@ Set.prototype.constructor = Set
   * key不允许重复
 * 空间利用率不高
   * 查找最大最小值不方便
-  
+
 * 哈希化：将对应数据转换为数字
 * 哈希函数：将大数字转换为小数字
 * 解决冲突：综合来讲，链地址法的效率比较稳定
@@ -568,6 +568,7 @@ function (num){
   
 
 * 常见操作：
+
   * insert(key)
 
     ```js
@@ -693,7 +694,7 @@ function (num){
   * min()
 
     ```js
-  min(){
+    min(){
         if (!this.root){ // 空根，退出
           return false
         }
@@ -704,11 +705,11 @@ function (num){
         return currentNode.key
     }
     ```
-  
+
     
-  
+
   * max()
-  
+
     ```js
     max(){
         if (!this.root){
@@ -721,11 +722,11 @@ function (num){
         return currentNode.key
     }
     ```
-  
+
     
-  
+
   * remove(key)
-  
+
     ```js
     removeNode(key){
         let currentNode = this.root
@@ -816,7 +817,7 @@ function (num){
             successor.left = currentNode.left
             return true
           }
-  
+    
         //  没有找到这个节点，返回false
       } else {
           return false
@@ -846,13 +847,13 @@ function (num){
         return successor
       }
     ```
-  
+
     在实际操作中，删除二叉树节点操作编码比较复杂，而且开销相对较大，所以一般情况下，尽量避免删除操作，而是给Node节点类添加一个`isDelete`的Boolean值，来标识当前节点是否删除，这样只需要寻找到删除的节点即可，而标识了被删除的节点在寻找时不会被返回，而是向下寻找或者跳出，但是这种处理方法会浪费大量的空间。
-  
+
     ### 寻找二叉树的最小深度
-  
+
     ```js
-  function run( root ) {
+    function run( root ) {
         if(!root)
         return 0;
         if(!root.left && !root.right)
@@ -877,15 +878,15 @@ function (num){
         return 0;
     }
     ```
+
     
-    
-    
+
     ### 二叉搜索树的缺陷
-    
+
     当按照有序，或者大部分有序的的方式插入数据，二叉搜索树的根节点会出现左子树过小，右子树过大，和与之相反的情况，二叉搜索树将失去平衡
-    
+
     解决方法：
-    
+
     * 使用AVL树，自平衡二叉查找树，每个节点多存储了一个额外的数据
     * 红黑树：目前广泛使用的平衡树，使用一些特性来保持平衡，在插入、删除操作时，性能优于AVL树
       * 节点只有红色和黑色两种
@@ -960,6 +961,7 @@ inOrderTraverseThreadedNodes = () => {
 ## 红黑树
 
 红黑树规则
+
 1. 节点只能是红色和黑色
 2. 根节点是黑色
 3. 每个叶子节点都是黑色且空节点（NIL节点）
@@ -991,18 +993,18 @@ inOrderTraverseThreadedNodes = () => {
 
    1. 如果变化后G为根节点，则将G以及整个子树都插入到内容为空的红黑树中，即G变为黑色
 
-   ![image-20200822114725471](C:\Users\Fusion\AppData\Roaming\Typora\typora-user-images\image-20200822114725471.png)
+   ![image-20200822114725471](https://raw.githubusercontent.com/MrReeese/proxy/master/img/image-20200822114725471.png)
 
 4. N是P的左子节点，P为红色，且P的右子节点不为空，U为黑色，G为黑色，此时需要将P变为黑色，G变为红色，再进行右旋转
 
-   ![image-20200822115425240](C:\Users\Fusion\AppData\Roaming\Typora\typora-user-images\image-20200822115425240.png)![image-20200822115551815](C:\Users\Fusion\AppData\Roaming\Typora\typora-user-images\image-20200822115551815.png)
+   ![image-20200822115425240](https://raw.githubusercontent.com/MrReeese/proxy/master/img/image-20200822115425240.png)![image-20200822115551815](https://raw.githubusercontent.com/MrReeese/proxy/master/img/image-20200822115551815.png)
 
 5. N是P的右子节点，P为红色，且P的左子节点B不为空，U为黑色，G为黑色，此时
 
    1. 以P为根进行左旋转
    2. 将G变为红色，N变为黑色，以G为根进行右旋转   
 
-   ![image-20200822123122453](C:\Users\Fusion\AppData\Roaming\Typora\typora-user-images\image-20200822123122453.png)
+   ![image-20200822123122453](https://raw.githubusercontent.com/MrReeese/proxy/master/img/image-20200822123122453.png)
 
 ## 计算逆波兰式（后缀表达式）的值
 
