@@ -190,7 +190,7 @@ http://47.115.62.216:5000
   * 双方都可以发送即时消息
   * 双方能够发送表情
 
-  ![image-20200824152257988](https://raw.githubusercontent.com/MrReeese/proxy/master/img/image-20200824152257988.png)![image-20200824152434867](https://github.com/MrReeese/proxy/tree/master/img/image-20200824152434867.png)
+  ![image-20200824152257988](https://raw.githubusercontent.com/MrReeese/proxy/master/img/image-20200824152257988.png)![image-20200824152434867](https://raw.githubusercontent.com/EricReevess/proxy/master/img/image-20200824152434867.png)
 
   ![image-20200824152457445](https://raw.githubusercontent.com/MrReeese/proxy/master/img/image-20200824152457445.png)
 
