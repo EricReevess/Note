@@ -1001,7 +1001,7 @@ src
     
   * 当前用户与某个用户的聊天信息数据结构,chatMessages 为数组类型，内部包含多个聊天信息对象
     
-        ![image-20200824205442000](https://raw.githubusercontent.com/MrReeese/proxy/master/img/image-20200824205442000.png)
+     ![image-20200824205442000](https://raw.githubusercontent.com/MrReeese/proxy/master/img/image-20200824205442000.png)
   
   * 修改指定消息为已读
   * 路径：/has-read-msg
